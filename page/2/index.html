@@ -200,6 +200,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/01/Nmap-%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/01/Nmap-%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/" class="post-title-link" itemprop="url">Nmap:批量端口扫描</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-01 19:00:15" itemprop="dateCreated datePublished" datetime="2022-07-01T19:00:15+08:00">2022-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-24 00:08:40" itemprop="dateModified" datetime="2022-07-24T00:08:40+08:00">2022-07-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">1.工具总结</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">1.信息收集工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45300786/article/details/120139192">https://blog.csdn.net/qq_45300786/article/details/120139192</a></p>
+<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>在针对搜集到的大量IP地址进行端口扫描的场景下，可以使用以下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap.exe -sS -Pn --open -T4  -iL ip.txt -oX res.xml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-sS：使用SYN方式扫描，默认用的是-sT方式，即TCP方式，需要完成完整的三次握手，比较费时，SYN就比较快一些了；</span><br><span class="line">-Pn： 禁用PING检测，这样速度快，并且可以防止有些主机无法ping通而被漏掉不扫描；</span><br><span class="line">-n： 不解析域名，加快扫描速度</span><br><span class="line">–open： 只输出检测状态为open的端口，即开放的端口；</span><br><span class="line">-T4：总共有T0-T5，貌似T4比较折中</span><br><span class="line">-iL：载入ip段文件，批量扫，不用一条条执行了。</span><br><span class="line">-oX：结果另存在xxx.xml格式</span><br></pre></td></tr></table></figure>
+
+<p>下载完后会得到一个存放结果的xml文件，可以用自动化脚本处理这个文件，将它转换成我们熟悉的xls表格格式</p>
+<p>脚本下载地址</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mrschyte/nmap-converter">https://github.com/mrschyte/nmap-converter</a></p>
+<p>脚本安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install -r requirements.txt		//windows安装它的第一个模块好像安装不成功，我使安装到了kali上</span><br></pre></td></tr></table></figure>
+
+<p>脚本使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 nmap-converter.py -o result.xls res.xml		//result.xls是最终结果，res.xml是nmap最初导出的结果文件</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/01/masscan%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1039,89 +1131,6 @@ Apache Tomcat 6.x
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/17/bettercap%E5%97%85%E6%8E%A2%E4%B8%8Earp%E6%B1%A1%E6%9F%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/05/17/bettercap%E5%97%85%E6%8E%A2%E4%B8%8Earp%E6%B1%A1%E6%9F%93/" class="post-title-link" itemprop="url">bettercap嗅探与arp污染</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-05-17 17:35:50" itemprop="dateCreated datePublished" datetime="2022-05-17T17:35:50+08:00">2022-05-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>help	查看当前开启的模块</p>
-<p>get *	查看当前所有配置</p>
-<p>get net.sniff.*	查看net.sniff模块的所有配置</p>
-<p>set net.sniff.output [属性值]	设置模块的属性</p>
-<p>help net.sniff	查看模块的帮助文档</p>
-<p>net.sniff on	开启某模块</p>
-<p>net.sniff off	关闭某模块</p>
-<p>net.recon模块：用于发现网内主机，基本信息有IP地址、MAC地址等</p>
-<p>​	net.show：net.recon模块的一个功能，列出当前发现的所有主机信息</p>
-<h3 id="网络嗅探"><a href="#网络嗅探" class="headerlink" title="网络嗅探"></a>网络嗅探</h3><p>set net.sniff.output ceshi.pcap	设置导出包</p>
-<p>set net.sniff.regexp baidu.com	设置关键字</p>
-<p>net.sniff on	开启网络嗅探，此时用户访问百度我们就可以收到http包</p>
-<p>net.sniff off	关闭网络嗅探</p>
-<h3 id="arp污染"><a href="#arp污染" class="headerlink" title="arp污染"></a>arp污染</h3><p>arp.spoof on	开启arp污染</p>
-<p>arp.ban	劫持arp流量但不放包，使全局断网</p>
-<p>set arp.spoof.targets 192.168.1.1	只针对特定IP进行arp污染</p>
-<h3 id="http代理"><a href="#http代理" class="headerlink" title="http代理"></a>http代理</h3><h3 id="https代理"><a href="#https代理" class="headerlink" title="https代理"></a>https代理</h3><h3 id="DNS欺骗"><a href="#DNS欺骗" class="headerlink" title="DNS欺骗"></a>DNS欺骗</h3><p>set dns.spoof.domains <a target="_blank" rel="noopener" href="http://www.sina.com/">www.sina.com</a>	设置要欺骗的域名</p>
-<p>set dns.spoof.address 127.0.0.1	设置将欺骗域名解析到我们自己的恶意IP</p>
-<p>dns.spoof on	开启dns欺骗</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1193,14 +1202,14 @@ Apache Tomcat 6.x
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1237,7 +1246,7 @@ Apache Tomcat 6.x
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共30.6k字</span>
+  <span class="post-count">博客全站共31.3k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>

